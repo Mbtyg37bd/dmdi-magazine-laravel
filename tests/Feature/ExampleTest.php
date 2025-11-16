@@ -2,18 +2,20 @@
 
 namespace Tests\Feature;
 
-// use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ExampleTest extends TestCase
 {
+    use RefreshDatabase;
+
     /**
-     * A basic test example.
+     * A basic feature test example.
      */
     public function test_the_application_returns_a_successful_response(): void
     {
-        $response = $this->get('/');
-
+        // Jika home meng-redirect, ikuti redirect sampai halaman akhir dan pastikan status 200.
+        $response = $this->followingRedirects()->get('/');
         $response->assertStatus(200);
     }
 }
