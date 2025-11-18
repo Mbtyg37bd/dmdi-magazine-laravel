@@ -7,82 +7,68 @@
     
     @yield('meta')
     
-    <!-- Bootstrap 5 -->
+    <!-- Bootstrap 5 (fallback utilities) -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-    <!-- Google Fonts - Mirip Esquire -->
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <style>
-        :root {
-            --primary-color: #1a1a1a;
-            --secondary-color: #666;
-            --accent-color: #c9a961;
-            --bg-light: #fafafa;
-            --border-color: #e5e5e5;
-        }
-        /* ... (styling unchanged) ... */
-    </style>
+    <!-- Vite managed assets (Tailwind + app JS) -->
+    @vite(['resources/css/app.css','resources/js/app.js'])
     
     @stack('styles')
 </head>
-<body>
+<body class="antialiased bg-white text-gray-900">
     <!-- Header -->
-    <header class="main-header">
-        <div class="container">
-            <div class="d-flex align-items-center justify-content-between py-3">
-                <a href="{{ url('/' . (app()->getLocale() ?? 'id')) }}" class="logo">
+    <header class="main-header py-4 border-b">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between">
+                <a href="{{ url('/' . (app()->getLocale() ?? 'id')) }}" class="logo text-2xl font-display font-bold tracking-tight">
                     DMDI
                 </a>
-                
-                <button class="mobile-menu-toggle" id="mobileMenuToggle">
-                    <i class="bi bi-list"></i>
-                </button>
-                
-                <nav class="main-nav" id="mainNav">
-                    <a href="{{ url('/' . (app()->getLocale() ?? 'id')) }}" class="nav-link">
-                        {{ app()->getLocale() == 'id' ? 'HOME' : 'HOME' }}
-                    </a>
-                    <a href="{{ url('/' . (app()->getLocale() ?? 'id') . '#politics') }}" class="nav-link">
-                        {{ app()->getLocale() == 'id' ? 'POLITIK' : 'POLITICS' }}
-                    </a>
-                    <a href="{{ url('/' . (app()->getLocale() ?? 'id') . '#culture') }}" class="nav-link">
-                        {{ app()->getLocale() == 'id' ? 'BUDAYA' : 'CULTURE' }}
-                    </a>
-                    <a href="{{ url('/' . (app()->getLocale() ?? 'id') . '#lifestyle') }}" class="nav-link">
-                        {{ app()->getLocale() == 'id' ? 'GAYA HIDUP' : 'LIFESTYLE' }}
-                    </a>
-                    
+
+                <div class="hidden md:flex items-center gap-6">
+                    <nav class="flex gap-4 text-sm uppercase tracking-wider">
+                        <a href="{{ url('/' . (app()->getLocale() ?? 'id')) }}" class="nav-link">HOME</a>
+                        <a href="{{ url('/' . (app()->getLocale() ?? 'id') . '#politics') }}" class="nav-link">POLITIK</a>
+                        <a href="{{ url('/' . (app()->getLocale() ?? 'id') . '#culture') }}" class="nav-link">BUDAYA</a>
+                        <a href="{{ url('/' . (app()->getLocale() ?? 'id') . '#lifestyle') }}" class="nav-link">GAYA HIDUP</a>
+                    </nav>
+
                     <div class="lang-switcher">
                         @include('layouts.partials.lang-toggle')
                     </div>
+                </div>
+
+                <button id="mobileMenuToggle" class="md:hidden p-2">
+                    <i class="bi bi-list text-2xl"></i>
+                </button>
+            </div>
+            <!-- Mobile nav (hidden by default) -->
+            <div id="mobileNav" class="hidden mt-3 md:hidden">
+                <nav class="flex flex-col gap-2 text-sm uppercase">
+                    <a href="{{ url('/' . (app()->getLocale() ?? 'id')) }}" class="nav-link">HOME</a>
+                    <a href="{{ url('/' . (app()->getLocale() ?? 'id') . '#politics') }}" class="nav-link">POLITIK</a>
+                    <a href="{{ url('/' . (app()->getLocale() ?? 'id') . '#culture') }}" class="nav-link">BUDAYA</a>
+                    <a href="{{ url('/' . (app()->getLocale() ?? 'id') . '#lifestyle') }}" class="nav-link">GAYA HIDUP</a>
                 </nav>
             </div>
         </div>
     </header>
 
     <!-- Main Content -->
-    <main>
+    <main class="min-h-screen">
         @yield('content')
     </main>
 
-    <!-- Footer (unchanged content) -->
-    <footer class="bg-dark text-light py-5 mt-5">
-        <!-- ... footer content unchanged ... -->
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-gray-200 py-8 mt-12">
+        <div class="container mx-auto px-4">
+            <div class="text-center text-sm">© {{ date('Y') }} DMDI Magazine</div>
+        </div>
     </footer>
 
-    <!-- Scripts -->
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <script>
-        // Mobile menu toggle (unchanged)
-        document.getElementById('mobileMenuToggle')?.addEventListener('click', function() {
-            document.getElementById('mainNav')?.classList.toggle('active');
-        });
-    </script>
-    
     @stack('scripts')
 </body>
 </html>
