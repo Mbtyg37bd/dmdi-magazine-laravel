@@ -1,4 +1,6 @@
 <?php
+name=app/Http/Middleware/QueryLocale.php
+<?php
 
 namespace App\Http\Middleware;
 
@@ -10,16 +12,16 @@ class QueryLocale
     /**
      * Set locale using (in order of precedence):
      * 1) route parameter 'locale' (e.g. /en/...)
-     * 2) query parameter 'lang' (e.g. ?lang=en)
-     * 3) session stored 'app_lang'
-     * 4) default 'id'
+     * 2) first URI segment (e.g. /en...)
+     * 3) query parameter 'lang' (e.g. ?lang=en)
+     * 4) session stored 'app_lang'
+     * 5) default 'id'
      */
     public function handle(Request $request, Closure $next)
     {
         // 1) route parameter (preferred for routes like /{locale}/...)
         $routeLocale = null;
         if ($request->route()) {
-            // some Laravel versions allow $request->route('locale')
             try {
                 $routeLocale = $request->route('locale');
             } catch (\Throwable $e) {
@@ -27,16 +29,21 @@ class QueryLocale
             }
         }
 
-        // 2) query param
+        // 2) first URI segment fallback (handles plain /en when route param not present)
+        $segmentLocale = $request->segment(1);
+
+        // 3) query param
         $queryLocale = $request->query('lang');
 
-        // 3) session stored locale
+        // 4) session stored locale
         $sessionLocale = session('app_lang');
 
         $allowed = ['id', 'en'];
 
         if ($routeLocale && in_array($routeLocale, $allowed, true)) {
             $lang = $routeLocale;
+        } elseif ($segmentLocale && in_array($segmentLocale, $allowed, true)) {
+            $lang = $segmentLocale;
         } elseif ($queryLocale && in_array($queryLocale, $allowed, true)) {
             $lang = $queryLocale;
         } elseif ($sessionLocale && in_array($sessionLocale, $allowed, true)) {

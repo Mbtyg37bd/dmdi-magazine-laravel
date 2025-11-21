@@ -147,7 +147,7 @@ footer.bg-gray-900 { padding-top: 1rem; padding-bottom: 1rem; margin-top: 2rem; 
 .latest-articles .section-header { margin-bottom: 3rem; }
 
 /* Header tweaks: spacing and logo */
-.logo { letter-spacing: -0.02em; }
+.logo { letter-spacing: -0.02em; font-family: 'Playfair Display', serif; color: #111827; }
 .nav-link { color: #111827; }
 .nav-link:hover { color: #000; text-decoration: underline; }
 
@@ -155,4 +155,400 @@ footer.bg-gray-900 { padding-top: 1rem; padding-bottom: 1rem; margin-top: 2rem; 
 header.border-b { border-bottom-width: 1px; border-color: #e5e7eb; }
 @media (min-width: 768px) {
   header .container { max-width: 1100px; }
+}
+
+/* Language link styles */
+header .md\\:flex a { text-decoration: none; }
+header .md\\:flex a.font-semibold { text-decoration: underline; }
+
+/* Small mobile adjustments */
+#mobileNav a { color: #111827; }
+
+/* Header magazine-like tweaks */
+.logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.125rem; /* small mobile */
+  letter-spacing: -0.02em;
+  font-weight: 700;
+  color: #111827;
+}
+@media (min-width: 768px) {
+  .logo { font-size: 1.75rem; } /* desktop */
+}
+
+/* Nav links */
+.nav-link {
+  color: #111827;
+  font-weight: 600;
+  text-decoration: none;
+  font-size: .875rem;
+}
+.nav-link:hover { text-decoration: underline; color: #000; }
+
+/* Language active */
+.active-locale, .font-semibold { text-decoration: underline; color: #111827; }
+
+/* Mobile nav show helper when toggled */
+#mobileNav.show { display: block !important; }
+
+/* Locale toggle switch */
+.locale-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  padding: 0.25rem;
+  border-radius: 999px;
+  background: #f3f4f6; /* light bg */
+  border: 1px solid #e5e7eb;
+  cursor: pointer;
+  min-width: 84px;
+  position: relative;
+  font-weight: 600;
+}
+.locale-switch .locale-label {
+  padding: 0 .5rem;
+  font-size: 0.85rem;
+  color: #374151;
+}
+.locale-switch .locale-slider {
+  position: absolute;
+  left: 4px;
+  top: 4px;
+  width: 34px;
+  height: 24px;
+  border-radius: 999px;
+  background: white;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+  transition: transform .18s ease;
+  z-index: 1;
+}
+/* when EN is active, slide to right */
+.locale-switch.is-en .locale-slider {
+  transform: translateX(34px);
+}
+/* highlight active label visually */
+.locale-switch.is-en .locale-en,
+.locale-switch:not(.is-en) .locale-id {
+  color: #111827;
+  text-decoration: underline;
+}
+/* small responsive */
+@media (max-width: 767px) {
+  .locale-switch { display:none; } /* hide desktop switch on small screens (mobile uses mobileLocaleToggle) */
+}
+
+/* Simple styles for ID/EN buttons in header */
+header .btn-sm {
+  padding: .25rem .5rem;
+  font-weight: 600;
+  border-radius: 999px;
+}
+header .btn-outline-secondary {
+  color: #374151;
+  border-color: #e5e7eb;
+}
+header .btn-secondary {
+  background-color: #111827;
+  border-color: #111827;
+  color: #fff;
+}
+@media (min-width:768px) {
+  header .logo { font-size: 1.75rem; font-family: 'Playfair Display', serif; }
+}
+
+/* Magazine / Esquire-like tweaks for homepage */
+
+/* Typography */
+html { font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; }
+.font-display { font-family: 'Playfair Display', serif; }
+
+/* HERO */
+.hero-section .main-featured-article {
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+}
+.hero-section .main-featured-article img {
+  width: 100%;
+  height: 520px;
+  object-fit: cover;
+  display: block;
+}
+.hero-overlay {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  padding: 28px;
+  background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.55) 40%, rgba(0,0,0,0.65) 100%);
+  color: #fff;
+}
+.hero-overlay .article-title {
+  font-family: 'Playfair Display', serif;
+  font-weight: 800;
+  font-size: 2.25rem;
+  line-height: 1.02;
+  margin: 0 0 .35rem 0;
+}
+@media(min-width:1024px){
+  .hero-overlay .article-title { font-size: 3rem; }
+}
+
+/* SIDE FEATURED */
+.side-featured-articles h4 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.15rem;
+  margin-bottom: .75rem;
+  border-bottom: 3px solid var(--accent);
+  display: inline-block;
+  padding-bottom: .15rem;
+}
+
+/* featured row below hero: large stacked cards */
+.featured-row { margin-top: 1rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.featured-card { background: #fff; border-radius: 8px; overflow: hidden; display:flex; flex-direction:column; }
+.featured-card img { width:100%; height:180px; object-fit:cover; display:block; }
+.featured-card .meta { padding:12px; }
+.featured-card .title { font-family:'Playfair Display', serif; font-weight:700; font-size:1.05rem; margin:0; }
+
+/* Most read */
+.section-most-read .grid { display:grid; grid-template-columns: repeat(4,1fr); gap: 14px; }
+.most-read-card { background:#fff; border-radius:6px; overflow:hidden; transition: transform .12s ease; }
+.most-read-card:hover{ transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0,0,0,0.06); }
+.most-read-card img { width:100%; height:140px; object-fit:cover; }
+
+/* Newsletter CTA red */
+.newsletter-cta {
+  background:#e11d2a; color:#fff; border-radius:6px; padding:36px 18px; margin-top:32px;
+}
+.newsletter-cta h3 { font-family: 'Playfair Display', serif; font-size:1.8rem; margin-bottom:8px; }
+.newsletter-cta p { margin:0 0 12px 0; color: #fffddf; }
+
+/* Grid feed styles */
+.article-grid { display:grid; grid-template-columns: repeat(2,1fr); gap:18px; }
+@media(min-width:1024px){ .article-grid { grid-template-columns: repeat(2,1fr); } }
+
+/* Sidebar widgets */
+.card-article { background:#fff; border-radius:8px; padding:12px; box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
+
+/* utility tweaks */
+.container { max-width: 1100px; margin-left:auto; margin-right:auto; padding-left:16px; padding-right:16px; }
+.text-muted { color: #6b7280; }
+
+/* small screens */
+@media (max-width: 767px) {
+  .hero-section .main-featured-article img { height: 320px; }
+  .featured-row { grid-template-columns: 1fr; }
+  .section-most-read .grid { grid-template-columns: repeat(2,1fr); }
+}
+
+/* Footer - Esquire-like layout */
+.site-footer { background: #fff; color: #111827; border-top: 1px solid #eee; font-size: 14px; }
+.site-footer .footer-top { padding-top: 36px; padding-bottom: 36px; }
+.site-footer .footer-brand img { max-height: 36px; display:block; }
+.footer-social .social-link { color: #111827; font-size: 18px; opacity: .9; }
+.footer-social .social-link:hover { opacity: 1; color: #000; }
+
+/* Links */
+.footer-links a { color: #0b0b0b; display:block; padding: 6px 0; text-decoration: none; }
+.footer-links a:hover { text-decoration: underline; }
+
+/* Hearst logo styling (if provided) */
+.hearst-logo { max-width: 140px; opacity: .95; margin-top: 10px; }
+
+/* Legal row */
+.footer-legal { border-top: 1px solid #f0f0f0; padding-top: 18px; padding-bottom: 18px; }
+.footer-legal .legal-right .legal-links a { color: #6b7280; text-decoration: none; font-size: 13px; }
+.footer-legal .legal-right .legal-links a:hover { text-decoration: underline; }
+
+/* Cookie choices button */
+.cookie-btn {
+  background: transparent;
+  border: 2px solid #111827;
+  color: #111827;
+  padding: 10px 18px;
+  border-radius: 4px;
+  font-weight: 700;
+  letter-spacing: .03em;
+}
+.cookie-btn:hover { background:#111827; color:#fff; }
+
+/* Responsive tweaks */
+@media (max-width: 767px) {
+  .footer-top .row { gap: 1rem; }
+  .footer-links { margin-bottom: 1rem; }
+  .footer-legal .legal-right { margin-top: 12px; }
+}
+
+/* Footer social icons fixes */
+.footer-social .social-icon {
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  vertical-align: middle;
+  color: #ffffff; /* inline SVG uses currentColor */
+  fill: currentColor;
+}
+
+.footer-social .social-link i {
+  font-size: 20px;
+  color: #fff;
+}
+
+.site-footer { background: #ffffff; color: #111827; } /* keep as existing */
+.site-footer .footer-social .social-link { display:inline-flex; align-items:center; justify-content:center; }
+
+/* === Footer: overrides to ensure social icons and logos are visible ===
+   Paste/append this to the end of resources/css/app.css
+*/
+
+/* Make sure footer background remains light and icons are dark by default */
+.site-footer {
+  background: #fff !important;
+  color: #111827 !important;
+  border-top: 1px solid #eee;
+}
+
+/* Brand logo */
+.footer-brand .footer-logo {
+  height: 36px;
+  display: block;
+  object-fit: contain;
+}
+
+/* Social icons container */
+.footer-social {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* Social link wrapper (square clickable area) */
+.footer-social .social-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  background: transparent;
+  color: #111827;              /* icon color (affects inline SVG via currentColor) */
+  text-decoration: none;
+  transition: transform .12s ease, background-color .12s ease, color .12s ease;
+}
+
+/* Hover: subtle lift and darker color */
+.footer-social .social-link:hover {
+  transform: translateY(-3px);
+  background: rgba(0,0,0,0.04);
+  color: #000;
+}
+
+/* Inline SVG icons - use currentColor and set size */
+.footer-social .social-icon {
+  width: 18px;
+  height: 18px;
+  display: inline-block;
+  vertical-align: middle;
+  fill: currentColor;   /* ensures SVG uses .social-link color */
+  color: inherit;
+}
+
+/* Bootstrap icon fallback (i.bi) must match color & size */
+.footer-social .social-link i {
+  font-size: 18px;
+  color: inherit;
+}
+
+/* If your footer will ever be dark, add class .site-footer--dark to switch colors */
+.site-footer--dark,
+.site-footer.dark {
+  background: #111827 !important;
+  color: #ffffff !important;
+}
+.site-footer--dark .social-link,
+.site-footer.dark .social-link {
+  color: #fff;
+}
+.site-footer--dark .social-link i,
+.site-footer.dark .social-link i {
+  color: #fff;
+}
+
+/* Small screens: reduce spacing */
+@media (max-width: 767px) {
+  .footer-social { gap: 8px; }
+  .footer-social .social-link { width: 32px; height: 32px; }
+  .footer-social .social-icon,
+  .footer-social .social-link i { width: 16px; height: 16px; font-size: 16px; }
+}
+
+/* --- Footer: single-row social icons --- */
+.footer-social {
+  display: flex !important;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: nowrap; /* single line */
+  padding: 6px 0;
+}
+
+.footer-social .social-link {
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: transparent;
+  color: #111827; /* dark icons on white footer */
+}
+
+.footer-social .social-icon,
+.footer-social .social-link i {
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+  fill: currentColor;
+  color: inherit;
+}
+
+/* responsive: allow wrapping only on very small screens */
+@media (max-width: 420px) {
+  .footer-social { flex-wrap: wrap; gap: 8px; }
+}
+
+/* Footer: local SVG social icons */
+.footer-social {
+  display: flex !important;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: nowrap;
+  padding: 6px 0;
+}
+
+.footer-social .social-link {
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: transparent;
+  color: #111827; /* controls SVG color via currentColor */
+  text-decoration: none;
+}
+
+.footer-social .social-icon-img {
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  vertical-align: middle;
+  object-fit: contain;
+  filter: none;
+}
+
+/* responsive: allow wrapping only on very small screens */
+@media (max-width: 420px) {
+  .footer-social { flex-wrap: wrap; gap: 8px; }
+  .footer-social .social-link { width: 34px; height: 34px; }
+  .footer-social .social-icon-img { width: 16px; height: 16px; }
 }

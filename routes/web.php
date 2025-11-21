@@ -43,3 +43,13 @@ Route::get('/create-admin', function () {
     ]);
     return 'Admin user created!';
 });
+
+// routes/web.php (append)
+Route::get('{locale?}/debug-locale', function ($locale = null) {
+    return [
+        'app_locale' => app()->getLocale(),
+        'session_app_lang' => session('app_lang'),
+        'first_segment' => request()->segment(1),
+        'route_locale_param' => request()->route() ? request()->route('locale') : null,
+    ];
+})->where('locale', 'id|en');

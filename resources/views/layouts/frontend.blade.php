@@ -20,41 +20,64 @@
     @stack('styles')
 </head>
 <body class="antialiased bg-white text-gray-900">
+    @php
+      // current locale and current path, used for language links
+      $currentLocale = app()->getLocale() ?? 'id';
+      $path = request()->getRequestUri();
+      // normalize path so '/id/...' doesn't become '/id/id/...'
+      $path = preg_replace('#^/(id|en)#', '', $path);
+      if ($path === '') { $path = '/'; }
+    @endphp
+
     <!-- Header -->
-    <header class="main-header py-4 border-b">
-        <div class="container mx-auto px-4">
-            <div class="flex items-center justify-between">
-                <a href="{{ url('/' . (app()->getLocale() ?? 'id')) }}" class="logo text-2xl font-display font-bold tracking-tight">
-                    DMDI
-                </a>
+    <header class="border-b bg-white">
+      <div class="container mx-auto px-4">
+        <div class="d-flex align-items-center justify-content-between py-3" style="display:flex;">
+          <!-- Left nav (desktop) -->
+          <nav class="d-none d-md-flex align-items-center gap-3 text-uppercase" style="gap:1rem;">
+            <a href="{{ route('frontend.home', ['locale' => $currentLocale]) }}" class="nav-link">{{ __('nav.home') }}</a>
+            <a href="{{ url('/' . $currentLocale . '#politics') }}" class="nav-link">{{ __('nav.politics') }}</a>
+            <a href="{{ url('/' . $currentLocale . '#culture') }}" class="nav-link">{{ __('nav.culture') }}</a>
+            <a href="{{ url('/' . $currentLocale . '#lifestyle') }}" class="nav-link">{{ __('nav.lifestyle') }}</a>
+          </nav>
 
-                <div class="hidden md:flex items-center gap-6">
-                    <nav class="flex gap-4 text-sm uppercase tracking-wider">
-                        <a href="{{ url('/' . (app()->getLocale() ?? 'id')) }}" class="nav-link">HOME</a>
-                        <a href="{{ url('/' . (app()->getLocale() ?? 'id') . '#politics') }}" class="nav-link">POLITIK</a>
-                        <a href="{{ url('/' . (app()->getLocale() ?? 'id') . '#culture') }}" class="nav-link">BUDAYA</a>
-                        <a href="{{ url('/' . (app()->getLocale() ?? 'id') . '#lifestyle') }}" class="nav-link">GAYA HIDUP</a>
-                    </nav>
+          <!-- Logo (center on desktop) -->
+          <div class="flex-grow-1 d-flex justify-content-center">
+            <a href="{{ route('frontend.home', ['locale' => $currentLocale]) }}" class="logo text-center">
+              DMDI
+            </a>
+          </div>
 
-                    <div class="lang-switcher">
-                        @include('layouts.partials.lang-toggle')
-                    </div>
-                </div>
-
-                <button id="mobileMenuToggle" class="md:hidden p-2">
-                    <i class="bi bi-list text-2xl"></i>
-                </button>
+          <!-- Right controls: simple ID/EN buttons + mobile toggle -->
+          <div class="d-flex align-items-center gap-2">
+            <!-- Locale buttons (desktop) -->
+            <div class="d-none d-md-flex align-items-center gap-2" aria-label="{{ __('nav.change_language') }}">
+              <a href="{{ url('/id' . $path) }}" class="btn btn-sm {{ $currentLocale == 'id' ? 'btn-secondary' : 'btn-outline-secondary' }}" aria-pressed="{{ $currentLocale == 'id' ? 'true' : 'false' }}">ID</a>
+              <a href="{{ url('/en' . $path) }}" class="btn btn-sm {{ $currentLocale == 'en' ? 'btn-secondary' : 'btn-outline-secondary' }}" aria-pressed="{{ $currentLocale == 'en' ? 'true' : 'false' }}">EN</a>
             </div>
-            <!-- Mobile nav (hidden by default) -->
-            <div id="mobileNav" class="hidden mt-3 md:hidden">
-                <nav class="flex flex-col gap-2 text-sm uppercase">
-                    <a href="{{ url('/' . (app()->getLocale() ?? 'id')) }}" class="nav-link">HOME</a>
-                    <a href="{{ url('/' . (app()->getLocale() ?? 'id') . '#politics') }}" class="nav-link">POLITIK</a>
-                    <a href="{{ url('/' . (app()->getLocale() ?? 'id') . '#culture') }}" class="nav-link">BUDAYA</a>
-                    <a href="{{ url('/' . (app()->getLocale() ?? 'id') . '#lifestyle') }}" class="nav-link">GAYA HIDUP</a>
-                </nav>
-            </div>
+
+            <!-- Mobile menu toggle -->
+            <button id="mobileMenuToggle" aria-label="Toggle menu" class="d-md-none p-2 border rounded">
+              <i class="bi bi-list"></i>
+            </button>
+          </div>
         </div>
+
+        <!-- Mobile nav (hidden by default) -->
+        <div id="mobileNav" class="d-none d-md-none mt-3">
+          <nav class="d-flex flex-column gap-2 text-uppercase">
+            <a href="{{ route('frontend.home', ['locale' => $currentLocale]) }}" class="block px-2 py-2">{{ __('nav.home') }}</a>
+            <a href="{{ url('/' . $currentLocale . '#politics') }}" class="block px-2 py-2">{{ __('nav.politics') }}</a>
+            <a href="{{ url('/' . $currentLocale . '#culture') }}" class="block px-2 py-2">{{ __('nav.culture') }}</a>
+            <a href="{{ url('/' . $currentLocale . '#lifestyle') }}" class="block px-2 py-2">{{ __('nav.lifestyle') }}</a>
+
+            <div class="border-top mt-2 pt-2 d-flex gap-2 px-2 align-items-center">
+              <a href="{{ url('/id' . $path) }}" class="btn btn-sm {{ $currentLocale == 'id' ? 'btn-secondary' : 'btn-outline-secondary' }}">ID</a>
+              <a href="{{ url('/en' . $path) }}" class="btn btn-sm {{ $currentLocale == 'en' ? 'btn-secondary' : 'btn-outline-secondary' }}">EN</a>
+            </div>
+          </nav>
+        </div>
+      </div>
     </header>
 
     <!-- Main Content -->
@@ -62,12 +85,22 @@
         @yield('content')
     </main>
 
-    <!-- Footer -->
-    <footer class="bg-gray-900 text-gray-200 py-8 mt-12">
-        <div class="container mx-auto px-4">
-            <div class="text-center text-sm">© {{ date('Y') }} DMDI Magazine</div>
-        </div>
-    </footer>
+    <!-- Footer: include the partial footer file -->
+    @include('layouts.partials.footer')
+
+    <!-- Small inline script for mobile menu toggle -->
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        const btn = document.getElementById('mobileMenuToggle');
+        const mobileNav = document.getElementById('mobileNav');
+        if (btn && mobileNav) {
+          btn.addEventListener('click', () => {
+            mobileNav.classList.toggle('d-none');
+            mobileNav.classList.toggle('show');
+          });
+        }
+      });
+    </script>
 
     @stack('scripts')
 </body>

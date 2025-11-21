@@ -10,6 +10,10 @@ class HomeController extends Controller
 {
     public function index($locale = 'id')
     {
+        // Pastikan aplikasi menggunakan locale dari route param
+        app()->setLocale($locale);
+        session(['app_lang' => $locale]);
+
         // Get featured articles
         $featuredArticles = Article::where('is_published', true)
                                  ->where('is_featured', true)

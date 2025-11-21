@@ -10,7 +10,13 @@ class FrontendController extends Controller
 {
     public function showArticle($locale, $slug)
     {
-        $article = Article::where('slug', $slug)->firstOrFail();
+        // Set locale dari route param dan simpan ke session
+        app()->setLocale($locale);
+        session(['app_lang' => $locale]);
+
+        $article = Article::where('slug', $slug)
+                          ->where('is_published', true)
+                          ->firstOrFail();
         
         // Get related articles (same category)
         $relatedArticles = Article::where('category_id', $article->category_id)
@@ -25,7 +31,11 @@ class FrontendController extends Controller
 
     public function showCategory($locale, $category)
     {
-        // Will implement category pages later
+        // Set locale for category pages as well
+        app()->setLocale($locale);
+        session(['app_lang' => $locale]);
+
+        // Implementasi halaman kategori nanti
         return "Category page for: " . $category . " in " . $locale;
     }
 }
