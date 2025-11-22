@@ -584,3 +584,21 @@ header .form-control-sm {
 @media (max-width: 576px) {
   header .form-control-sm { width: 100% !important; }
 }
+
+/* Header logo */
+.header-logo {
+  height: 44px;            /* sesuaikan tinggi sesuai desain */
+  width: auto;
+  display: inline-block;
+  object-fit: contain;
+  vertical-align: middle;
+}
+
+/* jika ingin versi lebih kecil di mobile */
+@media (max-width: 767px) {
+  .header-logo { height: 34px; }
+}
+
+/* fallback text styling (when image missing) */
+.logo-text { font-family: 'Playfair Display', serif; color: #111827; font-size:1.1rem; display:none; }
+.logo .logo-text[style*="display:inline-block"] { display:inline-block; }

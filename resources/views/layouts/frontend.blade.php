@@ -43,9 +43,13 @@
 
           <!-- Logo (center on desktop) -->
           <div class="flex-grow-1 d-flex justify-content-center">
-            <a href="{{ route('frontend.home', ['locale' => $currentLocale]) }}" class="logo text-center">
-              DMDI
-            </a>
+           <a href="{{ route('frontend.home', ['locale' => $currentLocale]) }}" class="logo text-center" aria-label="DMDI">
+  <img src="{{ asset('images/dmdi-logo.png') }}"
+       alt="DMDI"
+       class="header-logo"
+       onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';" />
+  <span class="logo-text" style="display:none; font-weight:700; letter-spacing:0.02em;">DMDI</span>
+</a>
           </div>
 
           <!-- Right controls: SEARCH + Locale + mobile toggles -->
