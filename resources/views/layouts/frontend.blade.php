@@ -29,10 +29,10 @@
       if ($path === '') { $path = '/'; }
     @endphp
 
-    <!-- Header -->
-    <header class="border-b bg-white">
+    <!-- Header (made sticky via .site-header) -->
+    <header class="site-header border-b bg-white">
       <div class="container mx-auto px-4">
-        <div class="d-flex align-items-center justify-content-between py-3" style="display:flex;">
+        <div class="d-flex align-items-center justify-content-between py-3" style="display:flex; position:relative;">
           <!-- Left nav (desktop) -->
           <nav class="d-none d-md-flex align-items-center gap-3 text-uppercase" style="gap:1rem;">
             <a href="{{ route('frontend.home', ['locale' => $currentLocale]) }}" class="nav-link">{{ __('nav.home') }}</a>
@@ -48,13 +48,34 @@
             </a>
           </div>
 
-          <!-- Right controls: simple ID/EN buttons + mobile toggle -->
+          <!-- Right controls: SEARCH + Locale + mobile toggles -->
           <div class="d-flex align-items-center gap-2">
+            <!-- Desktop search form -->
+            <form action="{{ route('frontend.search', ['locale' => $currentLocale]) }}" method="GET" class="d-none d-md-flex align-items-center me-3" role="search" style="gap:.5rem;">
+              <input
+                name="q"
+                type="search"
+                value="{{ request()->query('q', '') }}"
+                placeholder="{{ $currentLocale == 'en' ? 'Search articles...' : 'Cari artikel...' }}"
+                class="form-control form-control-sm"
+                style="width:220px; padding: .35rem .6rem;"
+                aria-label="{{ $currentLocale == 'en' ? 'Search' : 'Cari' }}"
+              >
+              <button type="submit" class="btn btn-sm btn-outline-secondary" aria-label="Search">
+                <i class="bi bi-search"></i>
+              </button>
+            </form>
+
             <!-- Locale buttons (desktop) -->
             <div class="d-none d-md-flex align-items-center gap-2" aria-label="{{ __('nav.change_language') }}">
               <a href="{{ url('/id' . $path) }}" class="btn btn-sm {{ $currentLocale == 'id' ? 'btn-secondary' : 'btn-outline-secondary' }}" aria-pressed="{{ $currentLocale == 'id' ? 'true' : 'false' }}">ID</a>
               <a href="{{ url('/en' . $path) }}" class="btn btn-sm {{ $currentLocale == 'en' ? 'btn-secondary' : 'btn-outline-secondary' }}" aria-pressed="{{ $currentLocale == 'en' ? 'true' : 'false' }}">EN</a>
             </div>
+
+            <!-- Mobile search toggle -->
+            <button id="mobileSearchToggle" class="d-md-none btn btn-sm me-2" aria-label="Open search">
+              <i class="bi bi-search"></i>
+            </button>
 
             <!-- Mobile menu toggle -->
             <button id="mobileMenuToggle" aria-label="Toggle menu" class="d-md-none p-2 border rounded">
@@ -77,6 +98,14 @@
             </div>
           </nav>
         </div>
+
+        <!-- Mobile inline search bar (hidden by default) -->
+        <div id="mobileSearchBar" class="d-none mt-3">
+          <form action="{{ route('frontend.search', ['locale' => $currentLocale]) }}" method="GET" class="d-flex" role="search">
+            <input name="q" type="search" class="form-control form-control-sm" placeholder="{{ $currentLocale == 'en' ? 'Search articles' : 'Cari artikel' }}" aria-label="Search">
+            <button type="submit" class="btn btn-sm btn-outline-secondary ms-2"><i class="bi bi-search"></i></button>
+          </form>
+        </div>
       </div>
     </header>
 
@@ -88,7 +117,7 @@
     <!-- Footer: include the partial footer file -->
     @include('layouts.partials.footer')
 
-    <!-- Small inline script for mobile menu toggle -->
+    <!-- Small inline script for legacy menu toggle (kept) -->
     <script>
       document.addEventListener('DOMContentLoaded', function () {
         const btn = document.getElementById('mobileMenuToggle');

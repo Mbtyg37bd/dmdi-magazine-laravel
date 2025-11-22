@@ -53,3 +53,6 @@ Route::get('{locale?}/debug-locale', function ($locale = null) {
         'route_locale_param' => request()->route() ? request()->route('locale') : null,
     ];
 })->where('locale', 'id|en');
+
+// Tambahkan route search (letakkan bersama route lain yang memakai {locale})
+Route::get('/{locale}/search', [App\Http\Controllers\SearchController::class, 'index'])->name('frontend.search');

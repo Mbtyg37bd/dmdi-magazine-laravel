@@ -552,3 +552,35 @@ html { font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvet
   .footer-social .social-link { width: 34px; height: 34px; }
   .footer-social .social-icon-img { width: 16px; height: 16px; }
 }
+
+/* === Header: sticky + search styling ===
+   Append this block to the end of resources/css/app.css
+*/
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 1100;
+  background: #fff; /* ensure solid background */
+  transition: box-shadow .12s ease, backdrop-filter .12s ease;
+}
+
+.site-header.is-stuck {
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+  backdrop-filter: blur(2px);
+}
+
+header .form-control-sm {
+  height: 34px;
+  font-size: .9rem;
+}
+
+#mobileSearchBar {
+  border-top: 1px solid #eef0f2;
+  padding-top: .75rem;
+  padding-bottom: .75rem;
+}
+
+/* Keep mobile search responsive */
+@media (max-width: 576px) {
+  header .form-control-sm { width: 100% !important; }
+}
