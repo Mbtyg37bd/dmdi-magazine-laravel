@@ -11,11 +11,11 @@ class DatabaseSeeder extends Seeder
 {
     public function run()
     {
-        // Create Categories
+        // Create or update Categories (idempotent)
         $categories = [
             [
                 'name_id' => 'Politik',
-                'name_en' => 'Politics', 
+                'name_en' => 'Politics',
                 'slug' => 'politik',
                 'description_id' => 'Berita dan analisis politik terkini',
                 'description_en' => 'Latest political news and analysis'
@@ -23,7 +23,7 @@ class DatabaseSeeder extends Seeder
             [
                 'name_id' => 'Budaya',
                 'name_en' => 'Culture',
-                'slug' => 'budaya', 
+                'slug' => 'budaya',
                 'description_id' => 'Artikel tentang budaya dan seni',
                 'description_en' => 'Articles about culture and arts'
             ],
@@ -51,10 +51,14 @@ class DatabaseSeeder extends Seeder
         ];
 
         foreach ($categories as $category) {
-            Category::create($category);
+            // use slug as unique key to avoid duplicates
+            Category::updateOrCreate(
+                ['slug' => $category['slug']],
+                $category
+            );
         }
 
-        // Create Sample Articles
+        // Create or update Sample Articles (idempotent by slug)
         $articles = [
             [
                 'slug' => 'keindahan-budaya-melayu-indonesia',
@@ -75,7 +79,7 @@ class DatabaseSeeder extends Seeder
             [
                 'slug' => 'perkembangan-islam-di-nusantara',
                 'title_id' => 'Perkembangan Islam di Nusantara',
-                'title_en' => 'The Development of Islam in the Archipelago', 
+                'title_en' => 'The Development of Islam in the Archipelago',
                 'excerpt_id' => 'Islam datang ke Nusantara melalui jalur perdagangan dan disebarkan dengan damai...',
                 'excerpt_en' => 'Islam came to the Archipelago through trade routes and was spread peacefully...',
                 'content_id' => "<p>Islam masuk ke Nusantara melalui para pedagang dari Arab, Persia, dan India. Proses islamisasi berlangsung secara damai dan bertahap.</p><p>Wali Songo berperan penting dalam menyebarkan Islam di Jawa dengan pendekatan kultural yang bijaksana. Mereka tidak menghapus tradisi lokal, melainkan mengislamkannya.</p><p>Hingga kini, Islam menjadi agama mayoritas di Indonesia dengan karakter yang khas dan moderat.</p>",
@@ -203,7 +207,13 @@ class DatabaseSeeder extends Seeder
         ];
 
         foreach ($articles as $article) {
-            Article::create($article);
+            Article::updateOrCreate(
+                ['slug' => $article['slug']],
+                $article
+            );
         }
+
+        // call AdSeeder (safe because AdSeeder uses updateOrCreate)
+        $this->call(\Database\Seeders\AdSeeder::class);
     }
 }

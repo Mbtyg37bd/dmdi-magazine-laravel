@@ -27,6 +27,8 @@
 
   <!-- Main grid -->
   <div id="searchGrid" class="row g-4">
+    @php $adShown = false; @endphp
+
     @foreach($articles as $index => $article)
       <div class="col-6 col-md-4">
         <article class="search-card h-100">
@@ -51,17 +53,26 @@
       <!-- Insert ad after the 6th item (desktop visual break) -->
       @if(($index + 1) == 6)
         <div class="col-12">
-          @include('layouts.partials.ad', ['slot'=>'ad-1'])
+          @include('layouts.partials.ad', ['position' => 'search-ad-1'])
         </div>
+        @php $adShown = true; @endphp
       @endif
 
       <!-- Insert second ad after 18th item -->
       @if(($index + 1) == 18)
         <div class="col-12">
-          @include('layouts.partials.ad', ['slot'=>'ad-2'])
+          @include('layouts.partials.ad', ['position' => 'search-ad-2'])
         </div>
+        @php $adShown = true; @endphp
       @endif
     @endforeach
+
+    {{-- If we never showed an ad (e.g. total results < 6), show primary ad here --}}
+    @if(!$adShown)
+      <div class="col-12">
+        @include('layouts.partials.ad', ['position' => 'search-ad-1'])
+      </div>
+    @endif
   </div>
 
   <!-- Pagination / See more -->
