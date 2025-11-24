@@ -77,6 +77,20 @@
                                 Artikel
                             </a>
                         </li>
+
+                        <!-- Ads menu (baru) -->
+                        @auth
+                            @if(auth()->user()->is_admin)
+                                <li class="nav-item">
+                                    <a class="nav-link {{ request()->is('admin/ads*') ? 'active' : '' }}" 
+                                       href="{{ route('ads.index') }}">
+                                        <i class="bi bi-megaphone me-2"></i>
+                                        Ads
+                                    </a>
+                                </li>
+                            @endif
+                        @endauth
+
                         <li class="nav-item">
                             <a class="nav-link" href="#">
                                 <i class="bi bi-grid me-2"></i>

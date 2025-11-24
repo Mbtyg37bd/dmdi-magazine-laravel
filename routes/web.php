@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FrontendController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ArticleController as AdminArticleController;
+use App\Http\Controllers\Admin\AdController as AdminAdController; // <- tambah ini
 use Illuminate\Support\Facades\Route;
 
 // Public Routes
@@ -30,6 +31,10 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     
     // Article Management
     Route::resource('/articles', AdminArticleController::class);
+
+    // Ads Management (CRUD)
+    Route::resource('/ads', AdminAdController::class); // <- tambahkan resource ads di sini
+
     Route::post('/articles/{id}/generate-qr', [AdminArticleController::class, 'generateQR'])->name('articles.generate-qr');
 });
 
