@@ -602,3 +602,20 @@ header .form-control-sm {
 /* fallback text styling (when image missing) */
 .logo-text { font-family: 'Playfair Display', serif; color: #111827; font-size:1.1rem; display:none; }
 .logo .logo-text[style*="display:inline-block"] { display:inline-block; }
+/* file: resources/css/app.css (atau file css proyekmu) */
+.ad-slot {
+  display: block;
+  margin: 24px auto;
+  max-width: 1200px; /* atau 100% jika mau full-width */
+  padding: 18px;     /* hapus atau sesuaikan jika tidak mau border color */
+  background: transparent; /* ganti jika tidak mau kotak berwarna */
+}
+
+.ad-slot img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: none;       /* hilangkan border */
+  border-radius: 6px; /* hati-hati jika mau tegas */
+  box-shadow: none;
+}

@@ -56,3 +56,5 @@ Route::get('{locale?}/debug-locale', function ($locale = null) {
 
 // Tambahkan route search (letakkan bersama route lain yang memakai {locale})
 Route::get('/{locale}/search', [App\Http\Controllers\SearchController::class, 'index'])->name('frontend.search');
+
+Route::get('out/ad/{ad}', [\App\Http\Controllers\AdClickController::class, 'out'])->name('ads.out');

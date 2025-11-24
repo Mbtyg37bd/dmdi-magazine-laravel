@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
 
 class Ad extends Model
 {
@@ -16,14 +17,19 @@ class Ad extends Model
         'starts_at',
         'ends_at',
         'priority',
+        'click_count',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
         'starts_at' => 'datetime',
         'ends_at' => 'datetime',
+        'click_count' => 'integer',
     ];
 
+    /**
+     * Scope: only currently active ads (by is_active and schedule)
+     */
     public function scopeActive($query)
     {
         $now = Carbon::now();
@@ -36,17 +42,32 @@ class Ad extends Model
             });
     }
 
+    /**
+     * Return a full URL for the ad image.
+     * Handles:
+     * - absolute URLs (http/https) -> returned as-is
+     * - paths already starting with 'storage/' or 'images/' or leading '/' -> asset(ltrim(path))
+     * - other relative paths (e.g. 'ads/xxx.png') -> assume stored on storage disk -> asset('storage/' . path)
+     */
     public function imageUrl()
     {
         if (!$this->image_path) {
             return null;
         }
-        if (preg_match('#^https?://#i', $this->image_path)) {
-            return $this->image_path;
+
+        $path = trim($this->image_path);
+
+        // absolute URL
+        if (preg_match('#^https?://#i', $path)) {
+            return $path;
         }
-        if (str_starts_with($this->image_path, 'storage/')) {
-            return asset($this->image_path);
+
+        // already public path (storage/..., images/..., or starting with /)
+        if (Str::startsWith($path, ['storage/', 'images/', '/'])) {
+            return asset(ltrim($path, '/'));
         }
-        return asset('images/' . ltrim($this->image_path, '/'));
+
+        // otherwise assume it is a storage disk path like "ads/filename.png"
+        return asset('storage/' . ltrim($path, '/'));
     }
 }
