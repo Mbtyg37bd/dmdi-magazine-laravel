@@ -92,13 +92,20 @@
 
           <div class="ad-space card-article text-center">
             <small class="text-muted d-block mb-2">{{ $locale == 'id' ? 'IKLAN' : 'ADVERTISEMENT' }}</small>
-            <div style="min-height:200px; background:#f8f8f8; border-radius:6px;"></div>
+
+            {{-- sidebar ad: gunakan posisi 'home-sidebar' --}}
+            @include('layouts.partials.ad', ['position' => 'home-sidebar'])
           </div>
         </aside>
       </div>
     </div>
   </div>
 </section>
+
+{{-- Full-width banner under hero: gunakan posisi 'home-top' --}}
+<div class="container py-4">
+  @include('layouts.partials.ad', ['position' => 'home-top'])
+</div>
 
 <!-- MOST READ -->
 <section class="section-most-read container py-5">

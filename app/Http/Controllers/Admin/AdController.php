@@ -36,16 +36,20 @@ class AdController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'name' => 'nullable|string|max:191',
-            'position' => 'required|string|max:191',
-            'url' => 'nullable|url|max:191',
-            'is_active' => 'sometimes|boolean',
-            'starts_at' => 'nullable|date',
-            'ends_at' => 'nullable|date|after_or_equal:starts_at',
-            'priority' => 'nullable|integer',
-            'image' => 'nullable|image|max:5120',
-        ]);
+// di method store() dan update() ganti $data = $request->validate([...]) ke:
+
+$data = $request->validate([
+    'name' => 'nullable|string|max:191',
+    'position' => 'required|string|max:191',
+    'placement' => 'required|in:search,dashboard,article',
+    'placement_target' => 'nullable|string|max:191', // slug atau id tergantung implementasi
+    'url' => 'nullable|url|max:191',
+    'is_active' => 'sometimes|boolean',
+    'starts_at' => 'nullable|date',
+    'ends_at' => 'nullable|date|after_or_equal:starts_at',
+    'priority' => 'nullable|integer',
+    'image' => 'nullable|image|max:5120',
+]);
 
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('ads', 'public');
