@@ -2,6 +2,14 @@
     $isEdit = isset($ad) && $ad;
     $placement = old('placement', $ad->placement ?? 'search');
     $placementTarget = old('placement_target', $ad->placement_target ?? '');
+    $positions = [
+        'home-top' => 'Home Top (leaderboard)',
+        'home-sidebar' => 'Home Sidebar (right)',
+        'article-inline' => 'Article Inline',
+        'search-ad-1' => 'Search Ad 1',
+        'ad-1' => 'Legacy: ad-1',
+        'ad-2' => 'Legacy: ad-2',
+    ];
 @endphp
 
 <form action="{{ $action }}" method="POST" enctype="multipart/form-data">
@@ -16,29 +24,42 @@
         @error('name') <div class="text-danger small">{{ $message }}</div> @enderror
     </div>
 
-    {{-- Position tetap ada untuk backward compatibility (slot identifier) --}}
     <div class="mb-3">
-        <label class="form-label">Position (contoh: search-ad-1)</label>
-        <input type="text" name="position" class="form-control" value="{{ old('position', $ad->position ?? '') }}" required>
+        <label class="form-label">Position</label>
+        <select name="position" class="form-select" required>
+            @foreach($positions as $key => $label)
+                <option value="{{ $key }}" {{ old('position', $ad->position ?? '') === $key ? 'selected' : '' }}>{{ $label }}</option>
+            @endforeach
+        </select>
+        <div class="form-text">Pilih slot iklan yang tersedia.</div>
         @error('position') <div class="text-danger small">{{ $message }}</div> @enderror
     </div>
 
-    {{-- New: Placement (search, dashboard, article) --}}
     <div class="mb-3">
         <label class="form-label">Placement</label>
         <select name="placement" id="placement" class="form-select">
-            <option value="search" {{ $placement === 'search' ? 'selected' : '' }}>Search (halaman pencarian)</option>
+            <option value="search" {{ $placement === 'search' ? 'selected' : '' }}>Search (halaman publik)</option>
             <option value="dashboard" {{ $placement === 'dashboard' ? 'selected' : '' }}>Dashboard (admin)</option>
-            <option value="article" {{ $placement === 'article' ? 'selected' : '' }}>Article (per artikel)</option>
+            <option value="article" {{ $placement === 'article' ? 'selected' : '' }}>Article</option>
         </select>
         @error('placement') <div class="text-danger small">{{ $message }}</div> @enderror
     </div>
 
-    {{-- target untuk placement article (slug atau id) --}}
     <div class="mb-3" id="placement-target-row" style="display: {{ $placement === 'article' ? 'block' : 'none' }};">
-        <label class="form-label">Placement target (Article slug atau ID)</label>
-        <input type="text" name="placement_target" class="form-control" value="{{ $placementTarget }}" placeholder="Masukkan slug artikel atau ID (mis. jamiyah-singapore)">
-        <div class="form-text">Isi hanya jika memilih "Article". Bisa memasukkan slug atau ID artikel.</div>
+        <label class="form-label">Placement target (Article)</label>
+        <select name="placement_target" class="form-select">
+            <option value="">{{ __('-- pilih artikel --') }}</option>
+            @if(isset($articles) && count($articles))
+                @foreach($articles as $article)
+                    <option value="{{ $article->slug }}" {{ $placementTarget == $article->slug ? 'selected' : '' }}>
+                        {{ $article->title }}
+                    </option>
+                @endforeach
+            @else
+                <option disabled>Belum ada daftar artikel (atau controller belum kirimkan)</option>
+            @endif
+        </select>
+        <div class="form-text">Pilih artikel jika placement = Article.</div>
         @error('placement_target') <div class="text-danger small">{{ $message }}</div> @enderror
     </div>
 
@@ -93,11 +114,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function togglePlacementTarget() {
         if (!placementSelect) return;
-        if (placementSelect.value === 'article') {
-            placementTargetRow.style.display = 'block';
-        } else {
-            placementTargetRow.style.display = 'none';
-        }
+        placementTargetRow.style.display = placementSelect.value === 'article' ? 'block' : 'none';
     }
 
     if (placementSelect) {

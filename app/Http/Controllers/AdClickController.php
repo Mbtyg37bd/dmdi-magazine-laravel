@@ -1,20 +1,28 @@
 <?php
+
 namespace App\Http\Controllers;
+
 use App\Models\Ad;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Http\RedirectResponse;
 
 class AdClickController extends Controller
 {
-    public function out(Ad $ad)
+    /**
+     * Increment click_count and redirect to ad URL (external).
+     * route: GET out/ad/{ad}
+     */
+    public function out(Ad $ad): RedirectResponse
     {
-        // contoh: increment counter (but better store in separate table for analytics)
         try {
+            // increment safely
             $ad->increment('click_count');
         } catch (\Throwable $e) {
-            Log::warning('Ad click log failed: '.$e->getMessage());
+            // jangan gagal total kalau DB read-only, tapi log jika perlu
+            \Log::warning('Failed to increment ad click_count: '.$e->getMessage());
         }
 
-        return redirect()->away($ad->url ?? '/');
+        // if URL set, redirect there; otherwise redirect home
+        $url = $ad->url ?? url('/');
+        return redirect()->away($url);
     }
 }

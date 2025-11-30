@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Ad;
+use App\Models\Article;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -11,7 +12,6 @@ class AdController extends Controller
 {
     public function __construct()
     {
-        // pastikan controller mewarisi Controller agar $this->middleware() tersedia
         $this->middleware('auth');
 
         // optional: batasi hanya untuk user admin
@@ -31,25 +31,25 @@ class AdController extends Controller
 
     public function create()
     {
-        return view('admin.ads.create');
+        // kirim daftar artikel supaya placement_target menjadi dropdown di form
+        $articles = Article::select('id','slug','title')->orderBy('created_at','desc')->get();
+        return view('admin.ads.create', compact('articles'));
     }
 
     public function store(Request $request)
     {
-// di method store() dan update() ganti $data = $request->validate([...]) ke:
-
-$data = $request->validate([
-    'name' => 'nullable|string|max:191',
-    'position' => 'required|string|max:191',
-    'placement' => 'required|in:search,dashboard,article',
-    'placement_target' => 'nullable|string|max:191', // slug atau id tergantung implementasi
-    'url' => 'nullable|url|max:191',
-    'is_active' => 'sometimes|boolean',
-    'starts_at' => 'nullable|date',
-    'ends_at' => 'nullable|date|after_or_equal:starts_at',
-    'priority' => 'nullable|integer',
-    'image' => 'nullable|image|max:5120',
-]);
+        $data = $request->validate([
+            'name' => 'nullable|string|max:191',
+            'position' => 'required|string|max:191',
+            'placement' => 'required|in:search,dashboard,article',
+            'placement_target' => 'nullable|string|max:191',
+            'url' => 'nullable|url|max:191',
+            'is_active' => 'sometimes|boolean',
+            'starts_at' => 'nullable|date',
+            'ends_at' => 'nullable|date|after_or_equal:starts_at',
+            'priority' => 'nullable|integer',
+            'image' => 'nullable|image|max:5120',
+        ]);
 
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('ads', 'public');
@@ -58,6 +58,7 @@ $data = $request->validate([
 
         $data['is_active'] = $request->has('is_active') ? (bool)$request->input('is_active') : true;
         $data['priority'] = $data['priority'] ?? 10;
+        $data['click_count'] = $data['click_count'] ?? 0;
 
         Ad::create($data);
 
@@ -71,7 +72,8 @@ $data = $request->validate([
 
     public function edit(Ad $ad)
     {
-        return view('admin.ads.edit', compact('ad'));
+        $articles = Article::select('id','slug','title')->orderBy('created_at','desc')->get();
+        return view('admin.ads.edit', compact('ad','articles'));
     }
 
     public function update(Request $request, Ad $ad)
@@ -79,6 +81,8 @@ $data = $request->validate([
         $data = $request->validate([
             'name' => 'nullable|string|max:191',
             'position' => 'required|string|max:191',
+            'placement' => 'required|in:search,dashboard,article',
+            'placement_target' => 'nullable|string|max:191',
             'url' => 'nullable|url|max:191',
             'is_active' => 'sometimes|boolean',
             'starts_at' => 'nullable|date',
@@ -89,7 +93,6 @@ $data = $request->validate([
 
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('ads', 'public');
-            // optional: delete previous file
             if ($ad->image_path && str_starts_with($ad->image_path, 'storage/')) {
                 $old = str_replace('storage/', '', $ad->image_path);
                 Storage::disk('public')->delete($old);
@@ -107,7 +110,6 @@ $data = $request->validate([
 
     public function destroy(Ad $ad)
     {
-        // optional: delete file
         if ($ad->image_path && str_starts_with($ad->image_path, 'storage/')) {
             $old = str_replace('storage/', '', $ad->image_path);
             Storage::disk('public')->delete($old);

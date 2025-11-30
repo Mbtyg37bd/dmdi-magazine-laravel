@@ -9,14 +9,18 @@ class AddClickCountToAdsTable extends Migration
     public function up()
     {
         Schema::table('ads', function (Blueprint $table) {
-            $table->unsignedBigInteger('click_count')->default(0)->after('priority');
+            if (!Schema::hasColumn('ads', 'click_count')) {
+                $table->unsignedBigInteger('click_count')->default(0)->after('placement_target');
+            }
         });
     }
 
     public function down()
     {
         Schema::table('ads', function (Blueprint $table) {
-            $table->dropColumn('click_count');
+            if (Schema::hasColumn('ads', 'click_count')) {
+                $table->dropColumn('click_count');
+            }
         });
     }
 }
