@@ -17,16 +17,9 @@ class Ad extends Model
         'starts_at',
         'ends_at',
         'priority',
-        'placement',         // <--- new
-        'placement_target',  // <--- new
+        'placement',
+        'placement_target',
         'click_count',
-    ];
-
-    protected $casts = [
-        'is_active' => 'boolean',
-        'starts_at' => 'datetime',
-        'ends_at' => 'datetime',
-        'click_count' => 'integer',
     ];
 
     protected $casts = [
