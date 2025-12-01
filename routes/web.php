@@ -7,7 +7,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ArticleController as AdminArticleController;
 use App\Http\Controllers\Admin\AdController as AdminAdController; // <- tambah ini
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\AdImpressionController;
 // Public Routes
 Route::get('/', function () {
     return redirect('/id');
@@ -63,3 +63,5 @@ Route::get('{locale?}/debug-locale', function ($locale = null) {
 Route::get('/{locale}/search', [App\Http\Controllers\SearchController::class, 'index'])->name('frontend.search');
 
 Route::get('out/ad/{ad}', [\App\Http\Controllers\AdClickController::class, 'out'])->name('ads.out');
+
+Route::post('/ads/impression/{ad}', [AdImpressionController::class, 'store'])->name('ads.impression');

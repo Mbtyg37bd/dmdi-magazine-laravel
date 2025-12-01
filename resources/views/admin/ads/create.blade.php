@@ -1,18 +1,22 @@
-@extends('admin.layouts.admin')
+@extends('admin.layouts.app')
 
-@section('title', 'Buat Ad - Admin')
-@section('page-title', 'Buat Ad')
+@section('title', 'Create Ad')
 
 @section('content')
-<div class="row">
-    <div class="col-12">
-        <a href="{{ route('ads.index') }}" class="btn btn-light mb-3">← Kembali ke list</a>
+<div class="container">
+  <div class="mb-3">
+    <h1 class="h3">Create Ad</h1>
+    <a href="{{ route('ads.index') }}" class="btn btn-link">Back to list</a>
+  </div>
 
-        <div class="card">
-            <div class="card-body">
-                @include('admin.ads._form', ['action' => route('ads.store'), 'method' => 'POST', 'ad' => null])
-            </div>
-        </div>
+  <div class="card">
+    <div class="card-body">
+      @include('admin.ads._form', [
+        'action' => route('ads.store'),
+        'method' => 'POST',
+        // 'articles' must be provided by controller (AdController@create)
+      ])
     </div>
+  </div>
 </div>
 @endsection

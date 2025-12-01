@@ -61,6 +61,7 @@
       $img = $ad->imageUrl();
       $href = route('ads.out', $ad->id);
       $alt  = $ad->name ?? 'Advertisement';
+      $adId = $ad->id;
   } else {
       if ($showFallback) {
           if ($position && isset($fallback[$position])) {
@@ -70,19 +71,22 @@
           }
           $href = $href ?? '#';
           $alt  = 'Advertisement';
+          $adId = null;
       } else {
           // nothing to render
           $img = null;
           $href = null;
           $alt = null;
+          $adId = null;
       }
   }
 @endphp
 
 @if($img)
   <div class="ad-slot text-center my-3" aria-label="Advertisement">
-    <a href="{{ $href }}" @if(Str::startsWith($href, 'http')) target="_blank" rel="noopener noreferrer" @endif>
+    <a href="{{ $href }}" @if($href && Str::startsWith($href, 'http')) target="_blank" rel="noopener noreferrer" @endif>
       <img src="{{ $img }}" alt="{{ e($alt) }}" loading="lazy" decoding="async"
+           class="ad-img" @if($adId) data-ad-id="{{ $adId }}" @endif
            style="max-width:100%; height:auto; display:inline-block; border:1px solid #eee; border-radius:6px;">
     </a>
   </div>

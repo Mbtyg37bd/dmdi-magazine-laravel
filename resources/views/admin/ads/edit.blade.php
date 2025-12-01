@@ -1,18 +1,22 @@
-@extends('admin.layouts.admin')
+@extends('admin.layouts.app')
 
-@section('title', 'Edit Ad - Admin')
-@section('page-title', 'Edit Ad')
+@section('title', 'Edit Ad')
 
 @section('content')
-<div class="row">
-    <div class="col-12">
-        <a href="{{ route('ads.index') }}" class="btn btn-light mb-3">← Kembali ke list</a>
+<div class="container">
+  <div class="mb-3 d-flex justify-content-between align-items-center">
+    <h1 class="h3">Edit Ad</h1>
+    <a href="{{ route('ads.index') }}" class="btn btn-link">Back to list</a>
+  </div>
 
-        <div class="card">
-            <div class="card-body">
-                @include('admin.ads._form', ['action' => route('ads.update', $ad->id), 'method' => 'PUT', 'ad' => $ad])
-            </div>
-        </div>
+  <div class="card">
+    <div class="card-body">
+      @include('admin.ads._form', [
+        'action' => route('ads.update', $ad->id),
+        'method' => 'PUT',
+        // $ad and $articles should be available from controller
+      ])
     </div>
+  </div>
 </div>
 @endsection
