@@ -64,7 +64,7 @@
 
           <!-- Logo (center on desktop) -->
           <div class="flex-grow-1 d-flex justify-content-center">
-           <a href="{{ route('frontend. home', ['locale' => $currentLocale]) }}" class="logo text-center" aria-label="DMDI">
+           <a href="{{ route('frontend.home', ['locale' => $currentLocale]) }}" class="logo text-center" aria-label="DMDI">
               <img src="{{ asset('images/dmdi-logo.png') }}"
                    alt="DMDI"
                    class="header-logo"
