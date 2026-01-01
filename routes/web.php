@@ -18,7 +18,7 @@ Route::get('/', function () {
 });
 
 // Multilingual Frontend Routes
-Route::get('/{locale}', [HomeController::class, 'index'])
+Route:: get('/{locale}', [HomeController::class, 'index'])
     ->where('locale', 'id|en')
     ->name('frontend.home');
 
@@ -28,7 +28,7 @@ Route::get('/{locale}/article/{slug}', [FrontendController::class, 'showArticle'
 
 Route::get('/{locale}/category/{slug}', [FrontendController::class, 'showCategory'])
     ->where('locale', 'id|en')
-    ->name('frontend.category.show');
+    ->name('frontend. category.show');
 
 Route::get('/{locale}/search', [SearchController::class, 'index'])
     ->where('locale', 'id|en')
@@ -40,7 +40,7 @@ Route::get('/login', function () {
 })->name('login');
 
 // Admin Auth Routes
-Route::get('/admin/login', [AuthController::class, 'showLogin'])->name('admin.login');
+Route::get('/admin/login', [AuthController:: class, 'showLogin'])->name('admin.login');
 Route::post('/admin/login', [AuthController::class, 'login']);
 Route::post('/admin/logout', [AuthController::class, 'logout'])->name('admin.logout');
 
