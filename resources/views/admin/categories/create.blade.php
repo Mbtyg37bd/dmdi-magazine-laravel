@@ -1,4 +1,4 @@
-@extends('admin.layouts. admin')
+@extends('admin.layouts.admin')
 
 @section('title', 'Tambah Kategori - DMDI Admin')
 @section('page-title', 'Tambah Kategori Baru')
@@ -27,7 +27,7 @@
                                id="name_id" 
                                name="name_id" 
                                value="{{ old('name_id') }}"
-                               placeholder="Contoh: Berita Utama"
+                               placeholder="Contoh:   Warisan & Peradaban"
                                required>
                         @error('name_id')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -44,7 +44,7 @@
                                id="name_en" 
                                name="name_en" 
                                value="{{ old('name_en') }}"
-                               placeholder="Example: Top News"
+                               placeholder="Example:   Heritage & Civilization"
                                required>
                         @error('name_en')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -88,16 +88,17 @@
                             <input class="form-check-input" 
                                    type="checkbox" 
                                    id="is_active" 
-                                   name="is_active"
-                                   {{ old('is_active', true) ? 'checked' : '' }}>
-                            <label class="form-check-label fw-semibold" for="is_active">
+                                   name="is_active" 
+                                   value="1"
+                                   {{ old('is_active', true) ? 'checked' :  '' }}>
+                            <label class="form-check-label" for="is_active">
                                 Aktifkan Kategori
                             </label>
                             <div class="form-text">Kategori aktif akan tampil di website</div>
                         </div>
                     </div>
 
-                    <!-- Submit Buttons -->
+                    <!-- Buttons -->
                     <div class="d-flex gap-2">
                         <button type="submit" class="btn btn-primary">
                             <i class="bi bi-check-circle me-1"></i>
@@ -113,17 +114,20 @@
         </div>
     </div>
 
-    <!-- Sidebar Help -->
+    <!-- Panduan (Sidebar) -->
     <div class="col-lg-4">
         <div class="card border-0 shadow-sm">
             <div class="card-body">
-                <h6 class="fw-bold mb-3"><i class="bi bi-info-circle me-2"></i>Panduan</h6>
+                <h6 class="fw-bold mb-3">
+                    <i class="bi bi-info-circle me-2"></i>
+                    Panduan
+                </h6>
                 <ul class="small text-muted">
-                    <li class="mb-2">Nama kategori harus unik dan jelas</li>
-                    <li class="mb-2">Gunakan bahasa yang mudah dipahami pembaca</li>
-                    <li class="mb-2">Deskripsi kategori membantu SEO</li>
-                    <li class="mb-2">Slug otomatis dibuat dari nama bahasa Inggris</li>
-                    <li class="mb-2">Kategori nonaktif tidak tampil di website</li>
+                    <li>Nama kategori harus unik dan jelas</li>
+                    <li>Gunakan bahasa yang mudah dipahami pembaca</li>
+                    <li>Deskripsi kategori membantu SEO</li>
+                    <li>Slug otomatis dibuat dari nama bahasa Inggris</li>
+                    <li>Kategori nonaktif tidak tampil di website</li>
                 </ul>
             </div>
         </div>

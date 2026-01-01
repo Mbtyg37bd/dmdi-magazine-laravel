@@ -1,4 +1,4 @@
-@extends('admin.layouts. admin')
+@extends('admin.layouts.admin')
 
 @section('title', 'Edit Artikel - DMDI Admin')  
 @section('page-title', 'Edit Artikel')
