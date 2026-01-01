@@ -1,95 +1,138 @@
 @extends('admin.layouts.admin')
 
-@section('title', 'Ads Management')
+@section('title','Ads')
 
 @section('content')
-<div class="container-fluid">
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <h1 class="h3 mb-0">Ads</h1>
-    <a href="{{ route('ads.create') }}" class="btn btn-primary">Create Ad</a>
-  </div>
+<div class="card mb-3">
+  <div class="card-body">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h5 class="mb-0">Ads</h5>
+      <a href="{{ route('ads.create') }}" class="btn btn-primary">Create Ad</a>
+    </div>
 
-  @if(session('success'))
-    <div class="alert alert-success">{{ session('success') }}</div>
-  @endif
-
-  <div class="card shadow-sm">
-    <div class="card-body p-0">
-      <div class="table-responsive">
-        <table class="table table-hover mb-0">
-          <thead class="table-light">
-            <tr>
-              <th style="width:80px">Preview</th>
-              <th>Name / Position</th>
-              <th>Placement</th>
-              <th>Active</th>
-              <th>Starts At</th>
-              <th>Clicks</th>
-              <th>Impressions</th>
-              <th style="width:140px">Priority</th>
-              <th style="width:160px">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            @forelse($ads as $ad)
-              <tr>
-                <td>
-                  @if($ad->image_path)
-                    <img src="{{ $ad->imageUrl() }}" alt="{{ $ad->name }}" style="max-width:72px; height:auto; border-radius:4px; border:1px solid #e9ecef;">
-                  @else
-                    <div class="bg-light text-muted text-center" style="width:72px;height:48px;display:flex;align-items:center;justify-content:center;border-radius:4px;">—</div>
-                  @endif
-                </td>
-                <td>
-                  <div class="fw-bold">{{ $ad->name ?? '—' }}</div>
-                  <small class="text-muted">{{ $ad->position ?? '—' }}</small>
-                </td>
-                <td>
-                  <span class="badge bg-secondary text-white">{{ ucfirst($ad->placement) }}</span>
-                  @if($ad->placement === 'article' && $ad->placement_target)
-                    <div class="small text-muted">target: {{ $ad->placement_target }}</div>
-                  @endif
-                </td>
-                <td>
-                  @if($ad->is_active)
-                    <span class="badge bg-success">Active</span>
-                  @else
-                    <span class="badge bg-danger">Inactive</span>
-                  @endif
-                </td>
-                <td>
-                  <small class="text-muted">{{ $ad->starts_at ? $ad->starts_at->format('Y-m-d H:i') : '-' }}</small>
-                </td>
-                <td>
-                  <span class="badge bg-info text-dark">{{ $ad->click_count ?? 0 }}</span>
-                </td>
-                <td>
-                  <span class="badge bg-light text-dark">{{ $ad->impression_count ?? 0 }}</span>
-                </td>
-                <td>
-                  <div>{{ $ad->priority ?? 0 }}</div>
-                </td>
-                <td>
-                  <a href="{{ route('ads.edit', $ad->id) }}" class="btn btn-sm btn-outline-primary">Edit</a>
-                  <form action="{{ route('ads.destroy', $ad->id) }}" method="POST" class="d-inline-block" onsubmit="return confirm('Delete this ad?');">
-                    @csrf
-                    @method('DELETE')
-                    <button class="btn btn-sm btn-outline-danger">Delete</button>
-                  </form>
-                </td>
-              </tr>
-            @empty
-              <tr>
-                <td colspan="9" class="text-center text-muted py-4">No ads yet. <a href="{{ route('ads.create') }}">Create one</a>.</td>
-              </tr>
-            @endforelse
-          </tbody>
-        </table>
+    <!-- Stats row -->
+    <div class="row mb-4" id="ads-stats-cards">
+      <div class="col-md-3">
+        <div class="card border">
+          <div class="card-body">
+            <small class="text-muted">Today so far</small>
+            <div class="h4 mt-2" id="stat-today">-</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card border">
+          <div class="card-body">
+            <small class="text-muted">Yesterday</small>
+            <div class="h4 mt-2" id="stat-yesterday">-</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card border">
+          <div class="card-body">
+            <small class="text-muted">Last 7 days</small>
+            <div class="h4 mt-2" id="stat-last7">-</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card border">
+          <div class="card-body">
+            <small class="text-muted">This month</small>
+            <div class="h4 mt-2" id="stat-month">-</div>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="card-footer">
-      {{ $ads->links() }}
+
+    <!-- Chart -->
+    <div class="card mb-3">
+      <div class="card-body">
+        <div class="d-flex justify-content-between mb-3">
+          <h6 class="mb-0">Click Report By Date</h6>
+        </div>
+        <canvas id="adsClicksChart" height="120"></canvas>
+      </div>
     </div>
+
+    <!-- existing ads table -->
+    <div class="card">
+      <div class="card-body p-0">
+        @include('admin.ads._table', ['ads' => $ads])
+      </div>
+    </div>
+
   </div>
 </div>
 @endsection
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const ctx = document.getElementById('adsClicksChart').getContext('2d');
+  let chart = null;
+
+  function fetchStats() {
+    fetch("{{ route('ads.stats') }}", {
+      method: 'GET',
+      credentials: 'same-origin',
+      headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    })
+    .then(r => {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    })
+    .then(json => {
+      // fill summary cards
+      document.getElementById('stat-today').textContent = json.summary.today ?? 0;
+      document.getElementById('stat-yesterday').textContent = json.summary.yesterday ?? 0;
+      document.getElementById('stat-last7').textContent = json.summary.last7 ?? 0;
+      document.getElementById('stat-month').textContent = json.summary.thisMonth ?? 0;
+
+      // render chart
+      const labels = (json.labels || []).map(l => {
+        try { return (new Date(l)).toLocaleDateString(); } catch(e){ return l; }
+      });
+      const data = json.data || [];
+
+      const dataset = {
+        labels: labels,
+        datasets: [{
+          label: '# of Clicks',
+          data: data,
+          borderColor: '#6f42c1',
+          backgroundColor: 'rgba(111,66,193,0.08)',
+          tension: 0.35,
+          pointRadius: 3,
+          pointBackgroundColor: '#6f42c1',
+          fill: true
+        }]
+      };
+
+      if (chart) {
+        chart.data = dataset;
+        chart.update();
+      } else {
+        chart = new Chart(ctx, {
+          type: 'line',
+          data: dataset,
+          options: {
+            responsive: true,
+            plugins: { legend: { display: false } },
+            scales: { x: { display: true }, y: { beginAtZero: true, ticks: { stepSize: 1 } } }
+          }
+        });
+      }
+    })
+    .catch(err => {
+      console.error('Failed to load ad stats', err);
+      // optional: show message in UI
+    });
+  }
+
+  fetchStats();
+});
+</script>
+@endpush

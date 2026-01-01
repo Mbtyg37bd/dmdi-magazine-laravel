@@ -9,10 +9,6 @@ use Illuminate\Support\Facades\Log;
 
 class AdClickController extends Controller
 {
-    /**
-     * Increment click_count, log the click to ad_clicks, and redirect to ad URL (external).
-     * route: GET out/ad/{ad}
-     */
     public function out(Ad $ad): RedirectResponse
     {
         Log::info('AdClickController::out called for ad_id=' . $ad->id . ' url=' . ($ad->url ?? '-'));
