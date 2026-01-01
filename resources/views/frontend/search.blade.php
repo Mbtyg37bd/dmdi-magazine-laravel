@@ -1,87 +1,212 @@
 @extends('layouts.frontend')
 
-@section('title', ($q ? ($locale == 'id' ? "Hasil Pencarian: $q" : "Search results: $q") : ($locale == 'id' ? 'Pencarian' : 'Search')) . ' - DMDI')
+@section('title', ($locale == 'id' ? 'Hasil Pencarian' :  'Search Results') . ((! empty($query)) ? ' - ' . $query :  '') . ' - DMDI Magazine')
+
+@section('meta')
+<meta name="description" content="{{ $locale == 'id' ? 'Hasil pencarian untuk: ' . $query : 'Search results for: ' . $query }}">
+<meta property="og:title" content="{{ $locale == 'id' ? 'Hasil Pencarian' :  'Search Results' }} - DMDI Magazine">
+<meta property="og:type" content="website">
+<meta name="robots" content="noindex, follow">
+@endsection
 
 @section('content')
-<div class="container py-4">
-  <!-- Search header: input + sort -->
-  <div class="search-top d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3 mb-4">
-    <form action="{{ route('frontend.search', ['locale' => $locale]) }}" method="GET" class="d-flex w-100" role="search">
-      <input name="q" type="search" value="{{ request()->query('q', $q ?? '') }}" class="form-control me-2" placeholder="{{ $locale == 'id' ? 'Cari artikel...' : 'Search articles...' }}" aria-label="Search" />
-      <button class="btn btn-primary" type="submit"><i class="bi bi-search"></i></button>
-    </form>
+<!-- Search Header -->
+<section class="search-header py-5 bg-light">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <h1 class="display-5 fw-bold mb-4 text-center">
+                    {{ $locale == 'id' ?  'Hasil Pencarian' : 'Search Results' }}
+                </h1>
+                
+                <!-- Search Form -->
+                <form action="{{ route('frontend.search', ['locale' => $locale]) }}" method="GET" class="mb-4">
+                    <div class="input-group input-group-lg shadow-sm">
+                        <input type="text" 
+                               name="q" 
+                               class="form-control" 
+                               placeholder="{{ $locale == 'id' ? 'Cari artikel...' : 'Search articles.. .' }}"
+                               value="{{ $query }}"
+                               required>
+                        <button class="btn btn-primary px-4" type="submit">
+                            <i class="bi bi-search me-1"></i>
+                            {{ $locale == 'id' ? 'Cari' : 'Search' }}
+                        </button>
+                    </div>
+                </form>
 
-    <div class="d-flex align-items-center gap-2">
-      <div class="text-muted small">{{ ($articles instanceof \Illuminate\Pagination\LengthAwarePaginator ? $articles->total() : (is_countable($articles) ? count($articles) : 0)) }} {{ $locale == 'id' ? 'hasil untuk' : 'results for' }} <strong class="ms-1">{{ e($q) }}</strong></div>
-
-      <form id="sortForm" class="d-flex align-items-center ms-3" aria-label="Sort">
-        <label for="sort" class="me-2 small text-muted d-none d-md-inline">{{ $locale == 'id' ? 'Urutkan' : 'Sort' }}</label>
-        <select id="sort" name="sort" class="form-select form-select-sm" onchange="document.getElementById('sortForm').submit()">
-          <option value="relevance"{{ request('sort') === 'relevance' ? ' selected' : '' }}>Relevance</option>
-          <option value="newest"{{ request('sort') === 'newest' ? ' selected' : '' }}>{{ $locale == 'id' ? 'Terbaru' : 'Newest' }}</option>
-          <option value="oldest"{{ request('sort') === 'oldest' ? ' selected' : '' }}>{{ $locale == 'id' ? 'Terlama' : 'Oldest' }}</option>
-        </select>
-      </form>
-    </div>
-  </div>
-
-  <!-- Main grid -->
-  <div id="searchGrid" class="row g-4">
-    @php $adShown = false; @endphp
-
-    @foreach($articles as $index => $article)
-      <div class="col-6 col-md-4">
-        <article class="search-card h-100">
-          <a href="{{ url($locale . '/article/' . $article->slug) }}" class="text-decoration-none text-dark d-block h-100">
-            @if(!empty($article->featured_image))
-              <div class="thumb mb-2 overflow-hidden" style="height:160px;">
-                <img src="{{ asset('storage/' . $article->featured_image) }}" alt="{{ $locale == 'id' ? $article->title_id : $article->title_en }}" class="w-100 h-100" style="object-fit:cover;">
-              </div>
-            @else
-              <div class="thumb-placeholder mb-2" style="height:160px;background:#f5f5f5;"></div>
-            @endif
-
-            <div class="card-body p-0">
-              <div class="mb-1 text-muted small">{{ $article->category->name ?? '' }} • {{ $article->created_at->format('M d, Y') }}</div>
-              <h5 class="h6 mb-1">{{ \Illuminate\Support\Str::limit($locale == 'id' ? $article->title_id : $article->title_en, 80) }}</h5>
-              <p class="text-muted small mb-0">{{ \Illuminate\Support\Str::limit($locale == 'id' ? $article->excerpt_id : $article->excerpt_en, 110) }}</p>
+                @if(! empty($query))
+                    <div class="text-center">
+                        <p class="text-muted mb-1">
+                            {{ $locale == 'id' ? 'Menampilkan hasil untuk: ' : 'Showing results for:' }}
+                        </p>
+                        <h5 class="fw-bold">"{{ $query }}"</h5>
+                        <p class="text-muted">
+                            {{ $articles->total() }} {{ $locale == 'id' ? 'artikel ditemukan' : 'articles found' }}
+                        </p>
+                    </div>
+                @endif
             </div>
-          </a>
-        </article>
-      </div>
-
-      <!-- Insert ad after the 6th item (desktop visual break) -->
-      @if(($index + 1) == 6)
-        <div class="col-12">
-          @include('layouts.partials.ad', ['position' => 'search-ad-1'])
         </div>
-        @php $adShown = true; @endphp
-      @endif
+    </div>
+</section>
 
-      <!-- Insert second ad after 18th item -->
-      @if(($index + 1) == 18)
-        <div class="col-12">
-          @include('layouts.partials.ad', ['position' => 'search-ad-2'])
+<!-- Search Results -->
+<section class="container py-5">
+    <div class="row gx-4">
+        <!-- Main Content -->
+        <div class="col-lg-8">
+            <!-- Category Filter -->
+            <div class="mb-4">
+                <form action="{{ route('frontend.search', ['locale' => $locale]) }}" method="GET" class="d-flex gap-2 align-items-center flex-wrap">
+                    <input type="hidden" name="q" value="{{ $query }}">
+                    <label class="fw-semibold me-2">{{ $locale == 'id' ? 'Filter: ' : 'Filter: ' }}</label>
+                    <select name="category" class="form-select form-select-sm w-auto" onchange="this.form.submit()">
+                        <option value="">{{ $locale == 'id' ? 'Semua Kategori' : 'All Categories' }}</option>
+                        @foreach($categories as $cat)
+                            <option value="{{ $cat->id }}" {{ $categoryFilter == $cat->id ? 'selected' : '' }}>
+                                {{ $locale == 'id' ? $cat->name_id : $cat->name_en }}
+                            </option>
+                        @endforeach
+                    </select>
+                </form>
+            </div>
+
+            @if($articles->count() > 0)
+                <div class="row g-4">
+                    @foreach($articles as $article)
+                        <div class="col-md-6">
+                            <article class="card border-0 shadow-sm h-100 hover-lift">
+                                <a href="{{ url($locale . '/article/' . $article->slug) }}" class="text-decoration-none">
+                                    @if($article->featured_image)
+                                        <div style="height: 200px; overflow: hidden; border-radius: 0.375rem 0.375rem 0 0;">
+                                            <img src="{{ asset('storage/' . $article->featured_image) }}" 
+                                                 alt="{{ $locale == 'id' ? $article->title_id : $article->title_en }}"
+                                                 class="w-100 h-100"
+                                                 style="object-fit: cover;">
+                                        </div>
+                                    @else
+                                        <div style="height: 200px; background:  linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%); border-radius: 0.375rem 0.375rem 0 0;"
+                                             class="d-flex align-items-center justify-content-center">
+                                            <i class="bi bi-image fs-1 text-muted"></i>
+                                        </div>
+                                    @endif
+                                    
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center mb-2">
+                                            <span class="badge bg-primary me-2">{{ $locale == 'id' ? ($article->category->name_id ?? '') : ($article->category->name_en ?? '') }}</span>
+                                            <small class="text-muted">{{ $article->created_at->format('M d, Y') }}</small>
+                                        </div>
+                                        
+                                        <h5 class="card-title fw-bold text-dark mb-2">
+                                            {{ \Illuminate\Support\Str::limit($locale == 'id' ? $article->title_id : $article->title_en, 70) }}
+                                        </h5>
+                                        
+                                        <p class="card-text text-muted small mb-3">
+                                            {{ \Illuminate\Support\Str::limit($locale == 'id' ? $article->excerpt_id : $article->excerpt_en, 100) }}
+                                        </p>
+                                        
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <small class="text-muted">
+                                                <i class="bi bi-person me-1"></i>{{ $article->author }}
+                                            </small>
+                                            <small class="text-muted">
+                                                <i class="bi bi-eye me-1"></i>{{ $article->view_count ?? 0 }}
+                                            </small>
+                                        </div>
+                                    </div>
+                                </a>
+                            </article>
+                        </div>
+                    @endforeach
+                </div>
+
+                <!-- Pagination -->
+                <div class="mt-5 d-flex justify-content-center">
+                    {{ $articles->appends(['q' => $query, 'category' => $categoryFilter])->links() }}
+                </div>
+            @else
+                <div class="text-center py-5">
+                    <i class="bi bi-search fs-1 text-muted"></i>
+                    <h5 class="text-muted mt-3">{{ $locale == 'id' ? 'Tidak ada hasil' : 'No results found' }}</h5>
+                    <p class="text-muted">
+                        {{ $locale == 'id' ? 'Coba gunakan kata kunci yang berbeda' : 'Try using different keywords' }}
+                    </p>
+                </div>
+            @endif
         </div>
-        @php $adShown = true; @endphp
-      @endif
-    @endforeach
 
-    {{-- If we never showed an ad (e.g. total results < 6), show primary ad here --}}
-    @if(!$adShown)
-      <div class="col-12">
-        @include('layouts.partials.ad', ['position' => 'search-ad-1'])
-      </div>
-    @endif
-  </div>
+        <!-- Sidebar -->
+        <aside class="col-lg-4">
+            <!-- Popular Articles -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body">
+                    <h5 class="fw-bold mb-3">{{ $locale == 'id' ? 'Artikel Populer' : 'Popular Articles' }}</h5>
+                    <ul class="list-unstyled">
+                        @foreach($popularArticles as $popular)
+                            <li class="mb-3">
+                                <a href="{{ url($locale . '/article/' . $popular->slug) }}" class="text-decoration-none text-dark d-flex gap-3">
+                                    @if($popular->featured_image)
+                                        <img src="{{ asset('storage/' . $popular->featured_image) }}" 
+                                             alt="" 
+                                             style="width: 80px; height: 60px; object-fit: cover; border-radius: 0.25rem;">
+                                    @else
+                                        <div style="width: 80px; height: 60px; background:  #f3f4f6; border-radius: 0.25rem;"
+                                             class="d-flex align-items-center justify-content-center">
+                                            <i class="bi bi-image text-muted"></i>
+                                        </div>
+                                    @endif
+                                    <div class="flex-grow-1">
+                                        <div class="small fw-semibold">
+                                            {{ \Illuminate\Support\Str::limit($locale == 'id' ? $popular->title_id : $popular->title_en, 60) }}
+                                        </div>
+                                        <small class="text-muted">
+                                            <i class="bi bi-eye me-1"></i>{{ $popular->view_count ?? 0 }}
+                                        </small>
+                                    </div>
+                                </a>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
 
-  <!-- Pagination / See more -->
-  <div class="mt-4 d-flex justify-content-center">
-    @if($articles instanceof \Illuminate\Pagination\LengthAwarePaginator)
-      <button id="loadMoreBtn" class="btn btn-outline-secondary" data-next-page="{{ $articles->nextPageUrl() }}">{{ $articles->hasMorePages() ? ($locale=='id' ? 'Lihat lebih banyak' : 'See more') : ($locale=='id' ? 'Tidak ada lagi' : 'No more') }}</button>
-    @else
-      <!-- fallback: no pagination -->
-    @endif
-  </div>
-</div>
+            <!-- All Categories -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body">
+                    <h5 class="fw-bold mb-3">{{ $locale == 'id' ? 'Kategori' : 'Categories' }}</h5>
+                    <div class="list-group list-group-flush">
+                        @foreach($categories->take(8) as $cat)
+                            <a href="{{ url($locale . '/category/' .  $cat->slug) }}" 
+                               class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                <span>{{ $locale == 'id' ? $cat->name_id : $cat->name_en }}</span>
+                                <span class="badge bg-primary rounded-pill">
+                                    {{ $cat->articles()->where('is_published', true)->count() }}
+                                </span>
+                            </a>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ad Space -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <small class="text-muted d-block mb-2">{{ $locale == 'id' ?  'IKLAN' : 'ADVERTISEMENT' }}</small>
+                    @include('layouts.partials.ad', ['position' => 'search-sidebar'])
+                </div>
+            </div>
+        </aside>
+    </div>
+</section>
+
+<style>
+. hover-lift {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.hover-lift:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15) !important;
+}
+</style>
 @endsection

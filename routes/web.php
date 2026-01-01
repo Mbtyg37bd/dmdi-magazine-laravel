@@ -5,53 +5,68 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FrontendController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ArticleController as AdminArticleController;
-use App\Http\Controllers\Admin\AdController as AdminAdController; // <- tambah ini
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
+use App\Http\Controllers\Admin\AdController as AdminAdController;
+use App\Http\Controllers\SearchController;
+use App\Http\Controllers\AdClickController;
 use App\Http\Controllers\AdImpressionController;
-use App\Http\Controllers\Admin\AdController;
+use Illuminate\Support\Facades\Route;
+
 // Public Routes
 Route::get('/', function () {
     return redirect('/id');
 });
 
 // Multilingual Frontend Routes
-Route::get('/{locale}', [HomeController::class, 'index'])->where('locale', 'id|en')->name('frontend.home');
-Route::get('/{locale}/article/{slug}', [FrontendController::class, 'showArticle'])->where('locale', 'id|en')->name('frontend.article.show');
+Route::get('/{locale}', [HomeController::class, 'index'])
+    ->where('locale', 'id|en')
+    ->name('frontend.home');
 
+Route::get('/{locale}/article/{slug}', [FrontendController::class, 'showArticle'])
+    ->where('locale', 'id|en')
+    ->name('frontend.article. show');
+
+Route::get('/{locale}/category/{slug}', [FrontendController::class, 'showCategory'])
+    ->where('locale', 'id|en')
+    ->name('frontend.category.show');
+
+Route::get('/{locale}/search', [SearchController::class, 'index'])
+    ->where('locale', 'id|en')
+    ->name('frontend.search');
+
+// Login redirect
 Route::get('/login', function () {
     return redirect()->route('admin.login');
 })->name('login');
+
 // Admin Auth Routes
 Route::get('/admin/login', [AuthController::class, 'showLogin'])->name('admin.login');
 Route::post('/admin/login', [AuthController::class, 'login']);
 Route::post('/admin/logout', [AuthController::class, 'logout'])->name('admin.logout');
 
 // Admin Protected Routes
-Route::middleware(['auth'])->prefix('admin')->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     
     // Article Management
-    Route::resource('/articles', AdminArticleController::class);
-
-    // Ads Management (CRUD)
-    Route::resource('/ads', AdminAdController::class); // <- tambahkan resource ads di sini
-
-    Route::post('/articles/{id}/generate-qr', [AdminArticleController::class, 'generateQR'])->name('articles.generate-qr');
+    Route::resource('articles', AdminArticleController::class);
+    Route::post('articles/{id}/generate-qr', [AdminArticleController:: class, 'generateQR'])
+        ->name('articles.generate-qr');
+    
+    // Category Management
+    Route::resource('categories', AdminCategoryController:: class);
+    
+    // Ads Management
+    Route::resource('ads', AdminAdController::class);
+    Route::get('ads/stats', [AdminAdController::class, 'stats'])->name('ads.stats');
 });
 
-// Create admin user route for testing
-Route::get('/create-admin', function () {
-    \App\Models\User::create([
-        'name' => 'Admin DMDI',
-        'email' => 'admin@dmdi.com',
-        'password' => bcrypt('password123'),
-        'is_admin' => true
-    ]);
-    return 'Admin user created!';
-});
+// Ad Tracking (Public)
+Route::get('out/ad/{ad}', [AdClickController::class, 'out'])->name('ads.out');
+Route::post('ads/impression/{ad}', [AdImpressionController::class, 'store'])->name('ads.impression');
 
-// routes/web.php (append)
-Route::get('{locale?}/debug-locale', function ($locale = null) {
+// Debug route (optional - remove in production)
+Route::get('{locale? }/debug-locale', function ($locale = null) {
     return [
         'app_locale' => app()->getLocale(),
         'session_app_lang' => session('app_lang'),
@@ -60,13 +75,18 @@ Route::get('{locale?}/debug-locale', function ($locale = null) {
     ];
 })->where('locale', 'id|en');
 
-// Tambahkan route search (letakkan bersama route lain yang memakai {locale})
-Route::get('/{locale}/search', [App\Http\Controllers\SearchController::class, 'index'])->name('frontend.search');
-
-Route::get('out/ad/{ad}', [\App\Http\Controllers\AdClickController::class, 'out'])->name('ads.out');
-
-Route::get('/admin/ads/stats', [AdController::class, 'stats'])
-    ->name('ads.stats')
-    ->middleware('auth');
-
-Route::post('/ads/impression/{ad}', [AdImpressionController::class, 'store'])->name('ads.impression');
+// Create admin user (remove in production)
+Route::get('/create-admin', function () {
+    if (\App\Models\User::where('email', 'admin@dmdi. com')->exists()) {
+        return 'Admin user already exists!';
+    }
+    
+    \App\Models\User::create([
+        'name' => 'Admin DMDI',
+        'email' => 'admin@dmdi.com',
+        'password' => bcrypt('password123'),
+        'is_admin' => true
+    ]);
+    
+    return 'Admin user created successfully!';
+});

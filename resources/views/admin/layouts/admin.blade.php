@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<! DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
@@ -8,7 +8,7 @@
     <!-- Bootstrap 5 CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons. css" rel="stylesheet">
     
     <!-- BLOCK TINYMCE -->
     <script>
@@ -32,7 +32,7 @@
         }
         
         .sidebar .nav-link:hover,
-        .sidebar .nav-link.active {
+        .sidebar .nav-link. active {
             background: #34495e;
             color: #3498db;
         }
@@ -72,31 +72,34 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link {{ request()->is('admin/articles*') ? 'active' : '' }}" 
-                               href="{{ route('articles.index') }}">
+                               href="{{ route('admin.articles.index') }}">
                                 <i class="bi bi-newspaper me-2"></i>
                                 Artikel
                             </a>
                         </li>
 
-                        <!-- Ads menu (baru) -->
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->is('admin/categories*') ? 'active' : '' }}" 
+                               href="{{ route('admin.categories.index') }}">
+                                <i class="bi bi-folder me-2"></i>
+                                Kategori
+                            </a>
+                        </li>
+
+                        
+
                         @auth
                             @if(auth()->user()->is_admin)
                                 <li class="nav-item">
                                     <a class="nav-link {{ request()->is('admin/ads*') ? 'active' : '' }}" 
-                                       href="{{ route('ads.index') }}">
+                                       href="{{ route('admin.ads.index') }}">
                                         <i class="bi bi-megaphone me-2"></i>
-                                        Ads
+                                        Iklan
                                     </a>
                                 </li>
                             @endif
                         @endauth
 
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">
-                                <i class="bi bi-grid me-2"></i>
-                                Kategori
-                            </a>
-                        </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#">
                                 <i class="bi bi-image me-2"></i>

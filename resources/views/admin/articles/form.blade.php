@@ -179,7 +179,7 @@
                     {{ isset($article) ? 'Perbarui Artikel' : 'Buat Artikel' }}
                 </button>
                 
-                <a href="{{ route('articles.index') }}" class="btn btn-outline-secondary w-100">
+                <a href="{{ route('admin.articles.index') }}" class="btn btn-outline-secondary w-100">
                     <i class="bi bi-arrow-left me-1"></i>
                     Kembali
                 </a>

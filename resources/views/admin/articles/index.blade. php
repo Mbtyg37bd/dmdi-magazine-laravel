@@ -99,7 +99,7 @@
                                        title="Lihat Artikel">
                                         <i class="bi bi-eye"></i>
                                     </a>
-                                    <a href="{{ route('admin.articles.edit', $article->id) }}" 
+                                    <a href="{{ route('admin.articles. edit', $article->id) }}" 
                                        class="btn btn-outline-primary"
                                        data-bs-toggle="tooltip"
                                        title="Edit Artikel">
@@ -205,6 +205,5 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 @endpush
-
 
 

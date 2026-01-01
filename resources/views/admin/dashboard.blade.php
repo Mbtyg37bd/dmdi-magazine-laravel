@@ -113,7 +113,7 @@
                                     </td>
                                     <td>{{ $article->created_at->format('d/m/Y') }}</td>
                                     <td>
-                                        <a href="{{ route('articles.edit', $article->id) }}" 
+                                        <a href="{{ route('admin.articles.edit', $article->id) }}" 
                                            class="btn btn-sm btn-outline-primary">
                                             <i class="bi bi-pencil"></i>
                                         </a>
@@ -127,7 +127,7 @@
                     <div class="text-center py-4">
                         <i class="bi bi-inbox fs-1 text-muted"></i>
                         <p class="text-muted mt-2">Belum ada artikel</p>
-                        <a href="{{ route('articles.create') }}" class="btn btn-primary">
+                        <a href="{{ route('admin.articles.create') }}" class="btn btn-primary">
                             <i class="bi bi-plus-circle me-1"></i>
                             Buat Artikel Pertama
                         </a>
@@ -146,13 +146,13 @@
                 <h5 class="fw-bold mb-3">Aksi Cepat</h5>
                 <div class="row">
                     <div class="col-md-3 mb-2">
-                        <a href="{{ route('articles.create') }}" class="btn btn-primary w-100">
+                        <a href="{{ route('admin.articles.create') }}" class="btn btn-primary w-100">
                             <i class="bi bi-plus-circle me-1"></i>
                             Artikel Baru
                         </a>
                     </div>
                     <div class="col-md-3 mb-2">
-                        <a href="{{ route('articles.index') }}" class="btn btn-outline-dark w-100">
+                        <a href="{{ route('admin.articles.index') }}" class="btn btn-outline-dark w-100">
                             <i class="bi bi-list-ul me-1"></i>
                             Kelola Artikel
                         </a>

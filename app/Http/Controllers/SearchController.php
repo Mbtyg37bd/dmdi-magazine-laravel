@@ -3,42 +3,55 @@
 namespace App\Http\Controllers;
 
 use App\Models\Article;
+use App\Models\Category;
 use Illuminate\Http\Request;
 
 class SearchController extends Controller
 {
-    /**
-     * Display search results.
-     * Route: GET /{locale}/search?q=...
-     */
-    public function index(Request $request, $locale)
+    public function index(Request $request, $locale = 'id')
     {
+        // Set locale
         app()->setLocale($locale);
         session(['app_lang' => $locale]);
 
-        $q = trim($request->query('q', ''));
+        // Get search query
+        $query = $request->input('q', '');
+        $categoryFilter = $request->input('category', '');
 
-        if ($q === '') {
-            // empty query -> no results (or optionally show popular)
-            $articles = collect();
-            return view('frontend.search', compact('articles', 'q', 'locale'));
+        // Build search query
+        $articlesQuery = Article::where('is_published', true);
+
+        if (! empty($query)) {
+            $articlesQuery->where(function ($q) use ($query, $locale) {
+                if ($locale == 'id') {
+                    $q->where('title_id', 'LIKE', '%' . $query . '%')
+                      ->orWhere('excerpt_id', 'LIKE', '%' . $query . '%')
+                      ->orWhere('content_id', 'LIKE', '%' . $query . '%');
+                } else {
+                    $q->where('title_en', 'LIKE', '%' . $query . '%')
+                      ->orWhere('excerpt_en', 'LIKE', '%' . $query . '%')
+                      ->orWhere('content_en', 'LIKE', '%' . $query . '%');
+                }
+            });
         }
 
-        // choose fields depending on locale; adjust field names to your Article model
-        $titleField = $locale === 'en' ? 'title_en' : 'title_id';
-        $excerptField = $locale === 'en' ? 'excerpt_en' : 'excerpt_id';
+        // Filter by category if specified
+        if (! empty($categoryFilter)) {
+            $articlesQuery->where('category_id', $categoryFilter);
+        }
 
-        $term = '%' . str_replace('%', '\\%', $q) . '%';
+        // Get results with pagination
+        $articles = $articlesQuery->orderBy('created_at', 'desc')->paginate(12);
 
-        $articles = Article::where('is_published', true)
-            ->where(function ($query) use ($titleField, $excerptField, $term) {
-                $query->where($titleField, 'like', $term)
-                      ->orWhere($excerptField, 'like', $term);
-            })
-            ->orderBy('created_at', 'desc')
-            ->paginate(12)
-            ->appends(['q' => $q]);
+        // Get all categories for filter
+        $categories = Category::where('is_active', true)->get();
 
-        return view('frontend.search', compact('articles', 'q', 'locale'));
+        // Get popular articles for sidebar
+        $popularArticles = Article::where('is_published', true)
+                                 ->orderBy('view_count', 'desc')
+                                 ->take(5)
+                                 ->get();
+
+        return view('frontend.search', compact('articles', 'categories', 'popularArticles', 'query', 'categoryFilter', 'locale'));
     }
 }
