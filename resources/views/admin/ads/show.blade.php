@@ -5,7 +5,7 @@
 @section('content')
 <div class="container">
   <div class="mb-3">
-    <a href="{{ route('admin.ads. index') }}" class="btn btn-link">← Back</a>
+    <a href="{{ route('admin.ads.index') }}" class="btn btn-link">← Back</a>
   </div>
 
   <div class="card">
@@ -30,8 +30,8 @@
           <p><strong>Clicks:</strong> {{ $ad->click_count ??  0 }}</p>
           <p><strong>Impressions:</strong> {{ $ad->impression_count ?? 0 }}</p>
           <div class="mt-3">
-            <a href="{{ route('admin.ads. edit', $ad->id) }}" class="btn btn-primary">Edit</a>
-            <a href="{{ route('admin.ads. index') }}" class="btn btn-secondary">Back</a>
+            <a href="{{ route('admin.ads.edit', $ad->id) }}" class="btn btn-primary">Edit</a>
+            <a href="{{ route('admin.ads.index') }}" class="btn btn-secondary">Back</a>
           </div>
         </div>
       </div>
