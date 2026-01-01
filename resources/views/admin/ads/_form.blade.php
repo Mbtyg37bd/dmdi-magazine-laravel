@@ -1,14 +1,14 @@
 @php
     $isEdit = isset($ad) && $ad;
-    $placement = old('placement', $ad->placement ?? 'search');
-    $placementTarget = old('placement_target', $ad->placement_target ?? '');
+    $placement = old('placement', $ad->placement ??  'search');
+    $placementTarget = old('placement_target', $ad->placement_target ??  '');
     $positions = [
         'home-top' => 'Home Top (leaderboard)',
         'home-sidebar' => 'Home Sidebar (right)',
         'article-inline' => 'Article Inline',
         'search-ad-1' => 'Search Ad 1',
-        'ad-1' => 'Legacy: ad-1',
-        'ad-2' => 'Legacy: ad-2',
+        'ad-1' => 'Legacy:  ad-1',
+        'ad-2' => 'Legacy:  ad-2',
     ];
 @endphp
 
@@ -20,7 +20,7 @@
 
     <div class="mb-3">
         <label class="form-label">Nama</label>
-        <input type="text" name="name" class="form-control" value="{{ old('name', $ad->name ?? '') }}">
+        <input type="text" name="name" class="form-control" value="{{ old('name', $ad->name ??  '') }}">
         @error('name') <div class="text-danger small">{{ $message }}</div> @enderror
     </div>
 
@@ -28,10 +28,10 @@
         <label class="form-label">Position</label>
         <select name="position" class="form-select" required>
             @foreach($positions as $key => $label)
-                <option value="{{ $key }}" {{ old('position', $ad->position ?? '') === $key ? 'selected' : '' }}>{{ $label }}</option>
+                <option value="{{ $key }}" {{ old('position', $ad->position ??  '') === $key ? 'selected' :  '' }}>{{ $label }}</option>
             @endforeach
         </select>
-        <div class="form-text">Pilih slot iklan yang tersedia.</div>
+        <div class="form-text">Pilih slot iklan yang tersedia. </div>
         @error('position') <div class="text-danger small">{{ $message }}</div> @enderror
     </div>
 
@@ -45,7 +45,7 @@
         @error('placement') <div class="text-danger small">{{ $message }}</div> @enderror
     </div>
 
-    <div class="mb-3" id="placement-target-row" style="display: {{ $placement === 'article' ? 'block' : 'none' }};">
+    <div class="mb-3" id="placement-target-row" style="display:  {{ $placement === 'article' ?  'block' : 'none' }};">
         <label class="form-label">Placement target (Article)</label>
         <select name="placement_target" class="form-select">
             <option value="">{{ __('-- pilih artikel --') }}</option>
@@ -56,7 +56,7 @@
                     </option>
                 @endforeach
             @else
-                <option disabled>Belum ada daftar artikel (atau controller belum kirimkan)</option>
+                <option disabled>Belum ada daftar artikel</option>
             @endif
         </select>
         <div class="form-text">Pilih artikel jika placement = Article.</div>
@@ -93,7 +93,7 @@
         <label class="form-label">Image (png/jpg)</label>
         @if($isEdit && $ad->image_path)
             <div class="mb-2">
-                <img src="{{ asset(ltrim($ad->image_path, '/')) }}" alt="preview" style="max-width:300px; height:auto;">
+                <img src="{{ asset(ltrim($ad->image_path, '/')) }}" alt="preview" style="max-width: 300px; height:auto;">
             </div>
         @endif
         <input type="file" name="image" class="form-control">
@@ -102,7 +102,7 @@
 
     <div class="mb-3">
         <button class="btn btn-primary">{{ $isEdit ? 'Update' : 'Create' }}</button>
-        <a href="{{ route('ads.index') }}" class="btn btn-secondary ms-2">Cancel</a>
+        <a href="{{ route('admin.ads.index') }}" class="btn btn-secondary ms-2">Cancel</a>
     </div>
 </form>
 
@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const placementTargetRow = document.getElementById('placement-target-row');
 
     function togglePlacementTarget() {
-        if (!placementSelect) return;
+        if (! placementSelect) return;
         placementTargetRow.style.display = placementSelect.value === 'article' ? 'block' : 'none';
     }
 

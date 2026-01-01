@@ -7,7 +7,7 @@
   <title>@yield('title', config('app.name')) — Admin</title>
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons. css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
   <link href="{{ asset('css/app.css') }}" rel="stylesheet">
   @stack('styles')
 </head>
@@ -35,14 +35,14 @@
         </li>
         <li class="nav-item">
           <a class="nav-link {{ request()->is('admin/articles*') ? 'active' : '' }}" 
-             href="{{ route('admin.articles. index') }}">
+             href="{{ route('admin.articles.index') }}">
             <i class="bi bi-newspaper me-1"></i>
             Articles
           </a>
         </li>
         <li class="nav-item">
           <a class="nav-link {{ request()->is('admin/categories*') ? 'active' : '' }}" 
-             href="{{ route('admin. categories.index') }}">
+             href="{{ route('admin.categories. index') }}">
             <i class="bi bi-folder me-1"></i>
             Categories
           </a>

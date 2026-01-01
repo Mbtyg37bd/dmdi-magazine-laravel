@@ -100,7 +100,7 @@
                             <i class="bi bi-check-circle me-1"></i>
                             Update Kategori
                         </button>
-                        <a href="{{ route('categories.index') }}" class="btn btn-outline-secondary">
+                        <a href="{{ route('admin.categories.index') }}" class="btn btn-outline-secondary">
                             <i class="bi bi-x-circle me-1"></i>
                             Batal
                         </a>

@@ -7,7 +7,7 @@
   <div class="card-body">
     <div class="d-flex justify-content-between align-items-center mb-3">
       <h5 class="mb-0">Ads</h5>
-      <a href="{{ route('ads.create') }}" class="btn btn-primary">Create Ad</a>
+      <a href="{{ route('admin.ads.create') }}" class="btn btn-primary">Create Ad</a>
     </div>
 
     <!-- Stats row -->
@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function () {
   let chart = null;
 
   function fetchStats() {
-    fetch("{{ route('ads.stats') }}", {
+    fetch("{{ route('admin.ads.stats') }}", {
       method: 'GET',
       credentials: 'same-origin',
       headers: { 'X-Requested-With': 'XMLHttpRequest' }
@@ -86,10 +86,10 @@ document.addEventListener('DOMContentLoaded', function () {
     })
     .then(json => {
       // fill summary cards
-      document.getElementById('stat-today').textContent = json.summary.today ?? 0;
+      document.getElementById('stat-today').textContent = json. summary.today ??  0;
       document.getElementById('stat-yesterday').textContent = json.summary.yesterday ?? 0;
-      document.getElementById('stat-last7').textContent = json.summary.last7 ?? 0;
-      document.getElementById('stat-month').textContent = json.summary.thisMonth ?? 0;
+      document.getElementById('stat-last7').textContent = json. summary.last7 ?? 0;
+      document.getElementById('stat-month').textContent = json. summary.thisMonth ?? 0;
 
       // render chart
       const labels = (json.labels || []).map(l => {
@@ -103,7 +103,7 @@ document.addEventListener('DOMContentLoaded', function () {
           label: '# of Clicks',
           data: data,
           borderColor: '#6f42c1',
-          backgroundColor: 'rgba(111,66,193,0.08)',
+          backgroundColor:  'rgba(111,66,193,0.08)',
           tension: 0.35,
           pointRadius: 3,
           pointBackgroundColor: '#6f42c1',
@@ -128,7 +128,6 @@ document.addEventListener('DOMContentLoaded', function () {
     })
     .catch(err => {
       console.error('Failed to load ad stats', err);
-      // optional: show message in UI
     });
   }
 

@@ -6,15 +6,14 @@
 <div class="container">
   <div class="mb-3">
     <h1 class="h3">Create Ad</h1>
-    <a href="{{ route('ads.index') }}" class="btn btn-link">Back to list</a>
+    <a href="{{ route('admin.ads.index') }}" class="btn btn-link">Back to list</a>
   </div>
 
   <div class="card">
     <div class="card-body">
       @include('admin.ads._form', [
-        'action' => route('ads.store'),
+        'action' => route('admin.ads.store'),
         'method' => 'POST',
-        // 'articles' must be provided by controller (AdController@create)
       ])
     </div>
   </div>

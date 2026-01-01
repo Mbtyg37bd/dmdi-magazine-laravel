@@ -1,10 +1,9 @@
-```blade
-{{-- Partial: admin.ads._table
+{{-- Partial:  admin. ads._table
      Expects $ads (LengthAwarePaginator or Collection) --}}
 <table class="table table-sm table-striped mb-0">
   <thead class="thead-light">
     <tr>
-      <th style="width:90px">Preview</th>
+      <th style="width: 90px">Preview</th>
       <th>Name / Position</th>
       <th>Placement</th>
       <th>Active</th>
@@ -20,16 +19,16 @@
       <tr>
         <td class="align-middle">
           @if($ad->image_path)
-            <img src="{{ asset($ad->image_path) }}" alt="{{ $ad->name ?? 'ad' }}" style="max-width:80px; max-height:48px; object-fit:contain; border-radius:4px;">
+            <img src="{{ asset($ad->image_path) }}" alt="{{ $ad->name ??  'ad' }}" style="max-width:80px; max-height:48px; object-fit: contain; border-radius:4px;">
           @else
-            <div style="width:80px; height:48px; background:#f5f5f5; display:flex;align-items:center;justify-content:center;color:#999;border-radius:4px;">
+            <div style="width:80px; height: 48px; background:#f5f5f5; display:flex;align-items:center;justify-content:center;color:#999;border-radius:4px;">
               No image
             </div>
           @endif
         </td>
 
         <td class="align-middle">
-          <div><strong>{{ $ad->name ?? '—' }}</strong></div>
+          <div><strong>{{ $ad->name ??  '—' }}</strong></div>
           <small class="text-muted">{{ $ad->position }}</small>
         </td>
 
@@ -53,7 +52,7 @@
         </td>
 
         <td class="align-middle">
-          <span class="badge bg-info text-dark">{{ $ad->click_count ?? 0 }}</span>
+          <span class="badge bg-info text-dark">{{ $ad->click_count ??  0 }}</span>
         </td>
 
         <td class="align-middle">
@@ -66,9 +65,9 @@
 
         <td class="align-middle">
           <div class="d-flex gap-2">
-            <a href="{{ route('ads.edit', $ad->id) }}" class="btn btn-sm btn-outline-primary">Edit</a>
+            <a href="{{ route('admin.ads.edit', $ad->id) }}" class="btn btn-sm btn-outline-primary">Edit</a>
 
-            <form action="{{ route('ads.destroy', $ad->id) }}" method="POST" onsubmit="return confirm('Delete this ad?');" style="display:inline-block;">
+            <form action="{{ route('admin.ads.destroy', $ad->id) }}" method="POST" onsubmit="return confirm('Delete this ad?');" style="display:inline-block;">
               @csrf
               @method('DELETE')
               <button class="btn btn-sm btn-outline-danger">Delete</button>
@@ -89,4 +88,3 @@
     {{ $ads->onEachSide(1)->links() }}
   </div>
 @endif
-```

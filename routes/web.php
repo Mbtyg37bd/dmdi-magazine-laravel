@@ -18,7 +18,7 @@ Route::get('/', function () {
 });
 
 // Multilingual Frontend Routes
-Route:: get('/{locale}', [HomeController::class, 'index'])
+Route::get('/{locale}', [HomeController::class, 'index'])
     ->where('locale', 'id|en')
     ->name('frontend.home');
 
@@ -28,7 +28,7 @@ Route::get('/{locale}/article/{slug}', [FrontendController::class, 'showArticle'
 
 Route::get('/{locale}/category/{slug}', [FrontendController::class, 'showCategory'])
     ->where('locale', 'id|en')
-    ->name('frontend. category.show');
+    ->name('frontend.category.show');
 
 Route::get('/{locale}/search', [SearchController::class, 'index'])
     ->where('locale', 'id|en')
@@ -40,13 +40,13 @@ Route::get('/login', function () {
 })->name('login');
 
 // Admin Auth Routes
-Route::get('/admin/login', [AuthController:: class, 'showLogin'])->name('admin.login');
+Route::get('/admin/login', [AuthController::class, 'showLogin'])->name('admin.login');
 Route::post('/admin/login', [AuthController::class, 'login']);
 Route::post('/admin/logout', [AuthController::class, 'logout'])->name('admin.logout');
 
 // Admin Protected Routes
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', [DashboardController:: class, 'index'])->name('dashboard');
     
     // Article Management
     Route::resource('articles', AdminArticleController::class);
@@ -77,13 +77,13 @@ Route::get('{locale? }/debug-locale', function ($locale = null) {
 
 // Create admin user (remove in production)
 Route::get('/create-admin', function () {
-    if (\App\Models\User::where('email', 'admin@dmdi. com')->exists()) {
-        return 'Admin user already exists!';
+    if (\App\Models\User::where('email', 'admin@dmdi.com')->exists()) {
+        return 'Admin user already exists! ';
     }
     
     \App\Models\User::create([
         'name' => 'Admin DMDI',
-        'email' => 'admin@dmdi.com',
+        'email' => 'admin@dmdi. com',
         'password' => bcrypt('password123'),
         'is_admin' => true
     ]);
