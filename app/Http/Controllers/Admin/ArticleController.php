@@ -148,29 +148,68 @@ class ArticleController extends Controller
                         ->with('success', 'Artikel berhasil dihapus!');
     }
 
-    public function generateQR($id)
-    {
+public function generateQR($id)
+{
+    try {
         $article = Article::findOrFail($id);
-
-        $url_en = url('/en/article/' . $article->slug);
-
-        $qrCode = QrCode::format('png')
-                        ->size(300)
-                        ->errorCorrection('H')
-                        ->generate($url_en);
-
-        $filename = 'qr-codes/article-' . $article->id . '-en.png';
-
-        Storage::disk('public')->put($filename, $qrCode);
-
+        
+        // URL artikel dalam bahasa Inggris
+        $url = url('en/article/' . $article->slug);
+        
+        // Generate QR Code menggunakan chillerlan (GD-based, no Imagick needed)
+        $options = new \chillerlan\QRCode\QROptions([
+            'version'      => -1,  // Auto-detect version (bisa sampai version 40)
+            'outputType'   => \chillerlan\QRCode\QRCode::OUTPUT_IMAGE_PNG,
+            'eccLevel'     => \chillerlan\QRCode\Common\EccLevel::M,  // Medium (balance antara size & error correction)
+            'scale'        => 8,   // Size: 8px per module (optimal untuk web)
+            'imageBase64'  => false,
+            'imageTransparent' => false,
+        ]);
+        
+        $qrcode = new \chillerlan\QRCode\QRCode($options);
+        $qrCodePng = $qrcode->render($url);
+        
+        // Path untuk save QR code
+        $filename = 'qrcodes/article-' . $article->id .  '-en.png';
+        
+        // Pastikan folder qrcodes ada
+        $qrcodesPath = storage_path('app/public/qrcodes');
+        if (!file_exists($qrcodesPath)) {
+            mkdir($qrcodesPath, 0755, true);
+        }
+        
+        // Save file
+        Storage::disk('public')->put($filename, $qrCodePng);
+        
+        // Update artikel dengan path QR code
         $article->update(['qr_code_path' => $filename]);
-
+        
+        \Log:: info('QR Code generated successfully', [
+            'article_id' => $article->id,
+            'filename' => $filename,
+            'url' => $url,
+            'url_length' => strlen($url)
+        ]);
+        
         return response()->json([
             'success' => true,
-            'message' => 'QR Code berhasil digenerate!',
+            'message' => 'QR Code berhasil digenerate! ',
             'qr_url' => asset('storage/' . $filename)
         ]);
+        
+    } catch (\Exception $e) {
+        \Log::error('QR Code generation failed:  ' . $e->getMessage(), [
+            'article_id' => $id,
+            'url' => url('en/article/' . Article::find($id)?->slug),
+            'trace' => $e->getTraceAsString()
+        ]);
+        
+        return response()->json([
+            'success' => false,
+            'message' => 'Gagal generate QR Code: ' . $e->getMessage()
+        ], 500);
     }
+}
 
     /**
      * Save multiple sizes + webp versions for given UploadedFile.
