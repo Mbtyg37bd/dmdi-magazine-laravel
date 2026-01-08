@@ -20,47 +20,62 @@
     @stack('styles')
 </head>
 <body class="antialiased bg-white text-gray-900">
-    @php
-      // current locale and current path, used for language links
-      $currentLocale = app()->getLocale() ?? 'id';
-      $path = request()->getRequestUri();
-      // normalize path so '/id/...' doesn't become '/id/id/...'
-      $path = preg_replace('#^/(id|en)#', '', $path);
-      if ($path === '') { $path = '/'; }
-      
-      // ✅ TAMBAHKAN INI - Ambil semua kategori untuk navigation
-      $headerCategories = \App\Models\Category::where('is_active', true)->get();
-    @endphp
+@php
+  // current locale and current path, used for language links
+  $currentLocale = app()->getLocale() ?? 'id';
+  $path = request()->getRequestUri();
+  // normalize path so '/id/.. .' doesn't become '/id/id/...'
+  $path = preg_replace('#^/(id|en)#', '', $path);
+  if ($path === '') { $path = '/'; }
+  
+  // Kategori untuk main menu (top-level)
+  $mainMenuCategories = \App\Models\Category::where('is_active', true)
+                                            ->where('show_in_main_menu', true)
+                                            ->orderBy('name_' . $currentLocale)
+                                            ->limit(10)
+                                            ->get();
+  
+  // Kategori untuk dropdown "Kategori"
+  $dropdownCategories = \App\Models\Category::where('is_active', true)
+                                            ->where('show_in_dropdown', true)
+                                            ->orderBy('name_' . $currentLocale)
+                                            ->limit(15)
+                                            ->get();
+@endphp
 
-    <!-- Header (made sticky via . site-header) -->
-    <header class="site-header border-b bg-white">
-      <div class="container mx-auto px-4">
-        <div class="d-flex align-items-center justify-content-between py-3" style="display:flex; position:relative;">
-          <!-- Left nav (desktop) -->
-          <nav class="d-none d-md-flex align-items-center gap-3 text-uppercase" style="gap:1rem;">
-            <a href="{{ route('frontend.home', ['locale' => $currentLocale]) }}" class="nav-link">{{ __('nav.home') }}</a>
-            
-            <!-- ✅ TAMBAHKAN INI - Categories Dropdown (Desktop) -->
-            <div class="dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="categoriesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                {{ $currentLocale == 'id' ? 'Kategori' :  'Categories' }}
-              </a>
-              <ul class="dropdown-menu" aria-labelledby="categoriesDropdown">
-                @foreach($headerCategories as $cat)
-                  <li>
-                    <a class="dropdown-item" href="{{ url($currentLocale . '/category/' . $cat->slug) }}">
-                      {{ $currentLocale == 'id' ?  $cat->name_id : $cat->name_en }}
-                    </a>
-                  </li>
-                @endforeach
-              </ul>
-            </div>
-            <!-- ✅ AKHIR Categories Dropdown -->
-            
-            <a href="{{ url('/' . $currentLocale . '#politics') }}" class="nav-link">{{ __('nav.politics') }}</a>
-            <a href="{{ url('/' . $currentLocale .  '#culture') }}" class="nav-link">{{ __('nav. culture') }}</a>
-            <a href="{{ url('/' . $currentLocale . '#lifestyle') }}" class="nav-link">{{ __('nav.lifestyle') }}</a>
-          </nav>
+<!-- Header (made sticky via . site-header) -->
+<header class="site-header border-b bg-white">
+  <div class="container mx-auto px-4">
+    <div class="d-flex align-items-center justify-content-between py-3" style="display: flex; position:relative;">
+      <!-- Left nav (desktop) -->
+      <nav class="d-none d-md-flex align-items-center gap-3 text-uppercase" style="gap:1rem;">
+        <a href="{{ route('frontend.home', ['locale' => $currentLocale]) }}" class="nav-link">{{ __('nav.home') }}</a>
+        
+        <!-- Main Menu Categories (Dynamic from Database) -->
+        @foreach($mainMenuCategories as $cat)
+          <a href="{{ url($currentLocale . '/category/' . $cat->slug) }}" class="nav-link">
+            {{ $currentLocale == 'id' ?  $cat->name_id : $cat->name_en }}
+          </a>
+        @endforeach
+        
+        <!-- Dropdown "Kategori" -->
+        @if($dropdownCategories->count() > 0)
+          <div class="dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="categoriesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              {{ $currentLocale == 'id' ? 'Kategori' :  'Categories' }}
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="categoriesDropdown">
+              @foreach($dropdownCategories as $cat)
+                <li>
+                  <a class="dropdown-item" href="{{ url($currentLocale . '/category/' . $cat->slug) }}">
+                    {{ $currentLocale == 'id' ? $cat->name_id : $cat->name_en }}
+                  </a>
+                </li>
+              @endforeach
+            </ul>
+          </div>
+        @endif
+      </nav>
 
           <!-- Logo (center on desktop) -->
           <div class="flex-grow-1 d-flex justify-content-center">
@@ -109,44 +124,40 @@
           </div>
         </div>
 
-        <!-- Mobile nav (hidden by default) -->
-        <div id="mobileNav" class="d-none d-md-none mt-3">
-          <nav class="d-flex flex-column gap-2 text-uppercase">
-            <a href="{{ route('frontend.home', ['locale' => $currentLocale]) }}" class="block px-2 py-2">{{ __('nav. home') }}</a>
-            
-            <!-- ✅ TAMBAHKAN INI - Categories Mobile Dropdown -->
-            <div class="px-2 py-2">
-              <button class="btn btn-link text-decoration-none p-0 text-uppercase w-100 text-start" 
-                      type="button" 
-                      data-bs-toggle="collapse" 
-                      data-bs-target="#mobileCategoriesCollapse" 
-                      aria-expanded="false">
-                {{ $currentLocale == 'id' ? 'Kategori' : 'Categories' }} 
-                <i class="bi bi-chevron-down float-end"></i>
-              </button>
-              <div class="collapse mt-2" id="mobileCategoriesCollapse">
-                <div class="d-flex flex-column gap-1 ps-3">
-                  @foreach($headerCategories as $cat)
-                    <a href="{{ url($currentLocale . '/category/' . $cat->slug) }}" class="text-decoration-none py-1">
-                      {{ $currentLocale == 'id' ? $cat->name_id : $cat->name_en }}
-                    </a>
-                  @endforeach
-                </div>
-              </div>
-            </div>
-            <!-- ✅ AKHIR Categories Mobile -->
-            
-            <a href="{{ url('/' . $currentLocale . '#politics') }}" class="block px-2 py-2">{{ __('nav.politics') }}</a>
-            <a href="{{ url('/' . $currentLocale . '#culture') }}" class="block px-2 py-2">{{ __('nav.culture') }}</a>
-            <a href="{{ url('/' . $currentLocale . '#lifestyle') }}" class="block px-2 py-2">{{ __('nav. lifestyle') }}</a>
-
-            <div class="border-top mt-2 pt-2 d-flex gap-2 px-2 align-items-center">
-              <a href="{{ url('/id' . $path) }}" class="btn btn-sm {{ $currentLocale == 'id' ? 'btn-secondary' : 'btn-outline-secondary' }}">ID</a>
-              <a href="{{ url('/en' . $path) }}" class="btn btn-sm {{ $currentLocale == 'en' ?  'btn-secondary' : 'btn-outline-secondary' }}">EN</a>
-            </div>
-          </nav>
+<!-- Mobile nav (hidden by default) -->
+<div id="mobileNav" class="d-none d-md-none mt-3">
+  <nav class="d-flex flex-column gap-2 text-uppercase">
+    <a href="{{ route('frontend.home', ['locale' => $currentLocale]) }}" class="block px-2 py-2">{{ __('nav.home') }}</a>
+    
+    <!-- Main Menu Categories (Mobile) -->
+    @foreach($mainMenuCategories as $cat)
+      <a href="{{ url($currentLocale . '/category/' . $cat->slug) }}" class="block px-2 py-2">
+        {{ $currentLocale == 'id' ? $cat->name_id : $cat->name_en }}
+      </a>
+    @endforeach
+    
+    <!-- Dropdown Categories (Mobile Collapse) -->
+    @if($dropdownCategories->count() > 0)
+      <div class="px-2 py-2">
+        <button class="btn btn-link text-decoration-none p-0 text-uppercase w-100 text-start" 
+                type="button" 
+                data-bs-toggle="collapse" 
+                data-bs-target="#mobileCategoriesCollapse" 
+                aria-expanded="false">
+          {{ $currentLocale == 'id' ?  'Kategori' : 'Categories' }} 
+          <i class="bi bi-chevron-down float-end"></i>
+        </button>
+        <div class="collapse mt-2" id="mobileCategoriesCollapse">
+          <div class="d-flex flex-column gap-1 ps-3">
+            @foreach($dropdownCategories as $cat)
+              <a href="{{ url($currentLocale . '/category/' . $cat->slug) }}" class="text-decoration-none py-1">
+                {{ $currentLocale == 'id' ?  $cat->name_id : $cat->name_en }}
+              </a>
+            @endforeach
+          </div>
         </div>
-
+      </div>
+    @endif
         <!-- Mobile inline search bar (hidden by default) -->
         <div id="mobileSearchBar" class="d-none mt-3">
           <form action="{{ route('frontend.search', ['locale' => $currentLocale]) }}" method="GET" class="d-flex" role="search">

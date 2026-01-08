@@ -60,13 +60,25 @@
                                     {{ Str::limit($category->description_id ??  '-', 80) }}
                                 </small>
                             </td>
-                            <td>
-                                @if($category->is_active)
-                                    <span class="badge bg-success">Aktif</span>
-                                @else
-                                    <span class="badge bg-secondary">Nonaktif</span>
-                                @endif
-                            </td>
+<td>
+    @if($category->is_active)
+        <span class="badge bg-success">Aktif</span>
+    @else
+        <span class="badge bg-secondary">Nonaktif</span>
+    @endif
+    
+    @if($category->show_in_main_menu)
+        <span class="badge bg-primary text-white ms-1">
+            <i class="bi bi-menu-button"></i> Main
+        </span>
+    @endif
+    
+    @if($category->show_in_dropdown)
+        <span class="badge bg-info text-dark ms-1">
+            <i class="bi bi-menu-button-wide"></i> Dropdown
+        </span>
+    @endif
+</td>
                             <td>
                                 <span class="badge bg-primary rounded-pill">
                                     {{ $category->articles_count }} artikel

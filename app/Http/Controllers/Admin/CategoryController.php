@@ -32,34 +32,40 @@ class CategoryController extends Controller
     /**
      * Store a newly created category
      */
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'name_id' => 'required|string|max: 255',
-            'name_en' => 'required|string|max:255',
-            'description_id' => 'nullable|string',
-            'description_en' => 'nullable|string',
-            'is_active' => 'boolean',
-        ]);
+public function store(Request $request)
+{
+    $validated = $request->validate([
+        'name_id' => 'required|string|max:255',
+        'name_en' => 'required|string|max: 255|unique:categories,name_en',
+        'description_id' => 'nullable|string',
+        'description_en' => 'nullable|string',
+        'is_active' => 'nullable|boolean',
+        'show_in_main_menu' => 'nullable|boolean',
+        'show_in_dropdown' => 'nullable|boolean',
+    ]);
 
-        // Generate unique slug
-        $slug = Str::slug($validated['name_en']);
-        $originalSlug = $slug;
-        $counter = 1;
-        while (Category::where('slug', $slug)->exists()) {
-            $slug = $originalSlug . '-' . $counter;
-            $counter++;
-        }
-        $validated['slug'] = $slug;
-
-        // Set default is_active if not provided
-        $validated['is_active'] = $request->has('is_active') ? true : false;
-
-        Category::create($validated);
-
-        return redirect()->route('admin.categories.index')
-                        ->with('success', 'Kategori berhasil ditambahkan! ');
+    $slug = \Str::slug($validated['name_en']);
+    $originalSlug = $slug;
+    $counter = 1;
+    
+    while (\App\Models\Category::where('slug', $slug)->exists()) {
+        $slug = $originalSlug . '-' . $counter;
+        $counter++;
     }
+    
+    $validated['slug'] = $slug;
+    $validated['is_active'] = $request->has('is_active') ? 1 : 0;
+    $validated['show_in_main_menu'] = $request->has('show_in_main_menu') ? 1 : 0;
+    $validated['show_in_dropdown'] = $request->has('show_in_dropdown') ? 1 : 0;
+    
+    // Backward compatibility
+    $validated['show_in_header'] = $validated['show_in_main_menu'] || $validated['show_in_dropdown'];
+
+    \App\Models\Category::create($validated);
+
+    return redirect()->route('admin.categories.index')
+                    ->with('success', 'Kategori berhasil dibuat! ');
+}
 
     /**
      * Display the specified category
@@ -86,36 +92,30 @@ class CategoryController extends Controller
     /**
      * Update the specified category
      */
-    public function update(Request $request, Category $category)
-    {
-        $validated = $request->validate([
-            'name_id' => 'required|string|max:255',
-            'name_en' => 'required|string|max:255',
-            'description_id' => 'nullable|string',
-            'description_en' => 'nullable|string',
-            'is_active' => 'boolean',
-        ]);
+public function update(Request $request, \App\Models\Category $category)
+{
+    $validated = $request->validate([
+        'name_id' => 'required|string|max:255',
+        'name_en' => 'required|string|max:255|unique:categories,name_en,' . $category->id,
+        'description_id' => 'nullable|string',
+        'description_en' => 'nullable|string',
+        'is_active' => 'nullable|boolean',
+        'show_in_main_menu' => 'nullable|boolean',
+        'show_in_dropdown' => 'nullable|boolean',
+    ]);
 
-        // Update slug if name_en changed
-        if ($validated['name_en'] !== $category->name_en) {
-            $slug = Str::slug($validated['name_en']);
-            $originalSlug = $slug;
-            $counter = 1;
-            while (Category::where('slug', $slug)->where('id', '!=', $category->id)->exists()) {
-                $slug = $originalSlug . '-' . $counter;
-                $counter++;
-            }
-            $validated['slug'] = $slug;
-        }
+    $validated['is_active'] = $request->has('is_active') ? 1 : 0;
+    $validated['show_in_main_menu'] = $request->has('show_in_main_menu') ? 1 : 0;
+    $validated['show_in_dropdown'] = $request->has('show_in_dropdown') ? 1 : 0;
+    
+    // Backward compatibility
+    $validated['show_in_header'] = $validated['show_in_main_menu'] || $validated['show_in_dropdown'];
 
-        // Set is_active
-        $validated['is_active'] = $request->has('is_active') ? true : false;
+    $category->update($validated);
 
-        $category->update($validated);
-
-        return redirect()->route('admin.categories.index')
-                        ->with('success', 'Kategori berhasil diperbarui!');
-    }
+    return redirect()->route('admin.categories.index')
+                    ->with('success', 'Kategori berhasil diperbarui!');
+}
 
     /**
      * Remove the specified category

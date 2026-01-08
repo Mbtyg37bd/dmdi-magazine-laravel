@@ -82,21 +82,61 @@
                         @enderror
                     </div>
 
-                    <!-- Status -->
-                    <div class="mb-4">
-                        <div class="form-check form-switch">
-                            <input class="form-check-input" 
-                                   type="checkbox" 
-                                   id="is_active" 
-                                   name="is_active" 
-                                   value="1"
-                                   {{ old('is_active', true) ? 'checked' :  '' }}>
-                            <label class="form-check-label" for="is_active">
-                                Aktifkan Kategori
-                            </label>
-                            <div class="form-text">Kategori aktif akan tampil di website</div>
-                        </div>
-                    </div>
+<!-- Status -->
+<!-- Display Settings -->
+<!-- Display Settings -->
+<div class="mb-4">
+    <h6 class="fw-bold mb-3">Pengaturan Tampilan</h6>
+    
+    <!-- Switch:  Aktifkan Kategori -->
+    <div class="form-check form-switch mb-3">
+        <input class="form-check-input" 
+               type="checkbox" 
+               id="is_active" 
+               name="is_active" 
+               value="1"
+               {{ old('is_active', true) ? 'checked' : '' }}>
+        <label class="form-check-label" for="is_active">
+            <i class="bi bi-check-circle me-1"></i>
+            Aktifkan Kategori
+        </label>
+        <div class="form-text">Kategori aktif akan tampil di website</div>
+    </div>
+
+    <!-- Switch: Tampilkan di Main Menu -->
+    <div class="form-check form-switch mb-3">
+        <input class="form-check-input" 
+               type="checkbox" 
+               id="show_in_main_menu" 
+               name="show_in_main_menu" 
+               value="1"
+               {{ old('show_in_main_menu', false) ? 'checked' : '' }}>
+        <label class="form-check-label" for="show_in_main_menu">
+            <i class="bi bi-menu-button me-1"></i>
+            Tampilkan di Menu Utama
+        </label>
+        <div class="form-text">
+            Kategori akan muncul sebagai menu utama di navbar (sejajar dengan HOME, POLITIK, dll)
+        </div>
+    </div>
+
+    <!-- Switch: Tampilkan di Dropdown -->
+    <div class="form-check form-switch">
+        <input class="form-check-input" 
+               type="checkbox" 
+               id="show_in_dropdown" 
+               name="show_in_dropdown" 
+               value="1"
+               {{ old('show_in_dropdown', false) ? 'checked' : '' }}>
+        <label class="form-check-label" for="show_in_dropdown">
+            <i class="bi bi-menu-button-wide me-1"></i>
+            Tampilkan di Dropdown "Kategori"
+        </label>
+        <div class="form-text">
+            Kategori akan muncul di dalam dropdown "Kategori" di navbar
+        </div>
+    </div>
+</div>
 
                     <!-- Buttons -->
                     <div class="d-flex gap-2">

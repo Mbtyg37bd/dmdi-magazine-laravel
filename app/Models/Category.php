@@ -6,7 +6,17 @@ use Illuminate\Database\Eloquent\Model;
 class Category extends Model
 {
     protected $table = 'categories';
-    protected $fillable = ['name_id', 'name_en', 'slug', 'description_id', 'description_en', 'is_active'];
+    protected $fillable = [
+    'name_id', 
+    'name_en', 
+    'slug', 
+    'description_id', 
+    'description_en', 
+    'is_active',
+    'show_in_header',      // Keep untuk backward compatibility
+    'show_in_main_menu',   // NEW
+    'show_in_dropdown'     // NEW
+];
     
     public function articles()
     {
