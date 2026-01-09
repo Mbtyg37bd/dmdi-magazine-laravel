@@ -1,18 +1,18 @@
 @extends('admin.layouts.admin')
 
-@section('title', 'Kelola Social Media - DMDI Admin')
-@section('page-title', 'Kelola Social Media')
+@section('title', 'Kelola Halaman - DMDI Admin')
+@section('page-title', 'Kelola Halaman')
 
 @section('content')
 <div class="card border-0 shadow-sm">
     <div class="card-header bg-white border-0 py-3 d-flex justify-content-between align-items-center">
         <h5 class="mb-0 fw-bold">
-            <i class="bi bi-share me-2"></i>
-            Daftar Social Media Links
+            <i class="bi bi-file-earmark-text me-2"></i>
+            Daftar Halaman
         </h5>
-        <a href="{{ route('admin.social-links.create') }}" class="btn btn-primary">
+        <a href="{{ route('admin.pages.create') }}" class="btn btn-primary">
             <i class="bi bi-plus-circle me-1"></i>
-            Tambah Social Media
+            Tambah Halaman
         </a>
     </div>
     
@@ -24,48 +24,32 @@
             </div>
         @endif
 
-        @if($socialLinks->count() > 0)
+        @if($pages->count() > 0)
             <div class="table-responsive">
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <th style="width: 10%;">Order</th>
-                            <th style="width: 15%;">Platform</th>
-                            <th style="width: 20%;">Nama</th>
-                            <th style="width: 30%;">URL</th>
-                            <th style="width: 10%;">Icon</th>
+                            <th style="width: 5%;">#</th>
+                            <th style="width: 25%;">Judul (ID)</th>
+                            <th style="width: 25%;">Judul (EN)</th>
+                            <th style="width: 20%;">Slug</th>
                             <th style="width: 10%;">Status</th>
-                            <th style="width:  15%;">Aksi</th>
+                            <th style="width: 15%;">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($socialLinks as $link)
+                        @foreach($pages as $page)
                         <tr>
+                            <td>{{ $loop->iteration }}</td>
                             <td>
-                                <span class="badge bg-secondary">{{ $link->order }}</span>
+                                <strong>{{ $page->title_id }}</strong>
+                            </td>
+                            <td>{{ $page->title_en }}</td>
+                            <td>
+                                <code>{{ $page->slug }}</code>
                             </td>
                             <td>
-                                <strong>{{ ucfirst($link->platform) }}</strong>
-                            </td>
-                            <td>{{ $link->name }}</td>
-                            <td>
-                                @if($link->url)
-                                    <a href="{{ $link->url }}" target="_blank" class="text-primary">
-                                        {{ Str::limit($link->url, 30) }}
-                                        <i class="bi bi-box-arrow-up-right small"></i>
-                                    </a>
-                                @else
-                                    <span class="text-muted">Belum diatur</span>
-                                @endif
-                            </td>
-                            <td>
-                                <img src="{{ asset('images/' . $link->icon) }}" 
-                                     alt="{{ $link->platform }}" 
-                                     style="width: 24px; height: 24px;"
-                                     onerror="this.style.display='none'">
-                            </td>
-                            <td>
-                                @if($link->is_active)
+                                @if($page->is_active)
                                     <span class="badge bg-success">Aktif</span>
                                 @else
                                     <span class="badge bg-secondary">Nonaktif</span>
@@ -73,16 +57,23 @@
                             </td>
                             <td>
                                 <div class="btn-group btn-group-sm">
-                                    <a href="{{ route('admin.social-links.edit', $link->id) }}" 
+                                    <a href="{{ route('frontend.page.show', ['locale' => 'id', 'slug' => $page->slug]) }}" 
+                                       class="btn btn-outline-info"
+                                       target="_blank"
+                                       data-bs-toggle="tooltip"
+                                       title="Preview">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <a href="{{ route('admin.pages.edit', $page->id) }}" 
                                        class="btn btn-outline-primary"
                                        data-bs-toggle="tooltip"
                                        title="Edit">
                                         <i class="bi bi-pencil"></i>
                                     </a>
-                                    <form action="{{ route('admin.social-links.destroy', $link->id) }}" 
+                                    <form action="{{ route('admin.pages.destroy', $page->id) }}" 
                                           method="POST" 
                                           class="d-inline"
-                                          onsubmit="return confirm('Yakin ingin menghapus social media link ini?')">
+                                          onsubmit="return confirm('Yakin ingin menghapus halaman ini?')">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" 
@@ -101,12 +92,12 @@
             </div>
         @else
             <div class="text-center py-5">
-                <i class="bi bi-share fs-1 text-muted"></i>
-                <h5 class="text-muted mt-3">Belum ada social media link</h5>
-                <p class="text-muted">Mulai dengan menambahkan social media pertama</p>
-                <a href="{{ route('admin.social-links.create') }}" class="btn btn-primary">
+                <i class="bi bi-file-earmark-text fs-1 text-muted"></i>
+                <h5 class="text-muted mt-3">Belum ada halaman</h5>
+                <p class="text-muted">Mulai dengan menambahkan halaman pertama</p>
+                <a href="{{ route('admin.pages.create') }}" class="btn btn-primary">
                     <i class="bi bi-plus-circle me-1"></i>
-                    Tambah Social Media
+                    Tambah Halaman
                 </a>
             </div>
         @endif
@@ -115,6 +106,6 @@
 
 <div class="alert alert-info mt-4">
     <i class="bi bi-info-circle me-2"></i>
-    <strong>Petunjuk:</strong> Hanya social media dengan status "Aktif" dan URL terisi yang akan muncul di footer website. 
+    <strong>Petunjuk:</strong> Halaman yang dibuat di sini akan bisa diakses melalui URL:  <code>/id/page/{slug}</code> atau <code>/en/page/{slug}</code>
 </div>
 @endsection

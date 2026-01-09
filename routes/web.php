@@ -12,6 +12,7 @@ use App\Http\Controllers\AdClickController;
 use App\Http\Controllers\AdImpressionController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\SocialLinkController;
+use App\Http\Controllers\PageController;
 
 // Public Routes
 Route::get('/', function () {
@@ -35,6 +36,11 @@ Route::get('/{locale}/search', [SearchController::class, 'index'])
     ->where('locale', 'id|en')
     ->name('frontend.search');
 
+    // Static Pages (About Us, Contact, etc)
+Route::get('/{locale}/page/{slug}', [PageController:: class, 'show'])
+    ->where('locale', 'id|en')
+    ->name('frontend.page.show');
+
 // Login redirect
 Route::get('/login', function () {
     return redirect()->route('admin.login');
@@ -56,6 +62,9 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     
     // Category Management
     Route::resource('categories', AdminCategoryController::  class);
+
+    // Pages Management
+Route::resource('pages', \App\Http\Controllers\Admin\PageController::class);
     
     // Ads Management
     Route::resource('ads', AdminAdController::class);
@@ -64,6 +73,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     // Social Media Links Management
     Route::resource('social-links', SocialLinkController::class);
 });
+
 
 // Ad Tracking (Public)
 Route::get('out/ad/{ad}', [AdClickController::class, 'out'])->name('ads.out');

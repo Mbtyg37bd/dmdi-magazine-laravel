@@ -87,6 +87,14 @@
                         </li>
 
                         <li class="nav-item">
+    <a class="nav-link {{ request()->is('admin/pages*') ? 'active' : '' }}" 
+       href="{{ route('admin.pages.index') }}">
+        <i class="bi bi-file-earmark-text me-2"></i>
+        Halaman
+    </a>
+</li>
+
+                        <li class="nav-item">
     <a class="nav-link {{ request()->is('admin/social-links*') ? 'active' : '' }}" 
        href="{{ route('admin.social-links.index') }}">
         <i class="bi bi-share me-2"></i>

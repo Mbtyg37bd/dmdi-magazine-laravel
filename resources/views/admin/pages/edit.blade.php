@@ -1,0 +1,192 @@
+@extends('admin.layouts.admin')
+
+@section('title', 'Edit Halaman - DMDI Admin')
+@section('page-title', 'Edit Halaman')
+
+@section('content')
+<form action="{{ route('admin.pages.update', $page->id) }}" method="POST">
+    @csrf
+    @method('PUT')
+    
+    <div class="row">
+        <!-- Main Content -->
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white border-0 py-3">
+                    <h5 class="mb-0 fw-bold">
+                        <i class="bi bi-file-earmark-text me-2"></i>
+                        Edit:  {{ $page->title_id }}
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <!-- Title ID -->
+                    <div class="mb-4">
+                        <label for="title_id" class="form-label fw-semibold">
+                            Judul (Bahasa Indonesia) <span class="text-danger">*</span>
+                        </label>
+                        <input type="text" 
+                               class="form-control @error('title_id') is-invalid @enderror" 
+                               id="title_id" 
+                               name="title_id" 
+                               value="{{ old('title_id', $page->title_id) }}"
+                               required>
+                        @error('title_id')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <!-- Title EN -->
+                    <div class="mb-4">
+                        <label for="title_en" class="form-label fw-semibold">
+                            Judul (English) <span class="text-danger">*</span>
+                        </label>
+                        <input type="text" 
+                               class="form-control @error('title_en') is-invalid @enderror" 
+                               id="title_en" 
+                               name="title_en" 
+                               value="{{ old('title_en', $page->title_en) }}"
+                               required>
+                        @error('title_en')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <!-- Slug -->
+                    <div class="mb-4">
+                        <label for="slug" class="form-label fw-semibold">
+                            Slug
+                        </label>
+                        <input type="text" 
+                               class="form-control @error('slug') is-invalid @enderror" 
+                               id="slug" 
+                               name="slug" 
+                               value="{{ old('slug', $page->slug) }}">
+                        @error('slug')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <!-- Content ID -->
+                    <div class="mb-4">
+                        <label for="content_id" class="form-label fw-semibold">
+                            Konten (Bahasa Indonesia)
+                        </label>
+                        <textarea class="form-control @error('content_id') is-invalid @enderror" 
+                                  id="content_id" 
+                                  name="content_id" 
+                                  rows="15">{{ old('content_id', $page->content_id) }}</textarea>
+                        @error('content_id')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <!-- Content EN -->
+                    <div class="mb-4">
+                        <label for="content_en" class="form-label fw-semibold">
+                            Konten (English)
+                        </label>
+                        <textarea class="form-control @error('content_en') is-invalid @enderror" 
+                                  id="content_en" 
+                                  name="content_en" 
+                                  rows="15">{{ old('content_en', $page->content_en) }}</textarea>
+                        @error('content_en')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- SEO -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white border-0 py-3">
+                    <h6 class="mb-0 fw-bold">
+                        <i class="bi bi-search me-2"></i>
+                        SEO
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <!-- Meta Description ID -->
+                    <div class="mb-3">
+                        <label for="meta_description_id" class="form-label fw-semibold">
+                            Meta Description (ID)
+                        </label>
+                        <textarea class="form-control" 
+                                  id="meta_description_id" 
+                                  name="meta_description_id" 
+                                  rows="3"
+                                  maxlength="160">{{ old('meta_description_id', $page->meta_description_id) }}</textarea>
+                        <small class="text-muted">Max 160 karakter</small>
+                    </div>
+
+                    <!-- Meta Description EN -->
+                    <div class="mb-3">
+                        <label for="meta_description_en" class="form-label fw-semibold">
+                            Meta Description (EN)
+                        </label>
+                        <textarea class="form-control" 
+                                  id="meta_description_en" 
+                                  name="meta_description_en" 
+                                  rows="3"
+                                  maxlength="160">{{ old('meta_description_en', $page->meta_description_en) }}</textarea>
+                        <small class="text-muted">Max 160 characters</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Status -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white border-0 py-3">
+                    <h6 class="mb-0 fw-bold">
+                        <i class="bi bi-gear me-2"></i>
+                        Status
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" 
+                               type="checkbox" 
+                               id="is_active" 
+                               name="is_active" 
+                               value="1"
+                               {{ old('is_active', $page->is_active) ? 'checked' : '' }}>
+                        <label class="form-check-label" for="is_active">
+                            Aktifkan Halaman
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle me-1"></i>
+                            Simpan Perubahan
+                        </button>
+                        <a href="{{ route('admin.pages.index') }}" class="btn btn-outline-secondary">
+                            <i class="bi bi-x-circle me-1"></i>
+                            Batal
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Preview -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <a href="{{ route('frontend.page.show', ['locale' => 'id', 'slug' => $page->slug]) }}" 
+                       class="btn btn-outline-info w-100" 
+                       target="_blank">
+                        <i class="bi bi-eye me-1"></i>
+                        Preview Halaman
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+@endsection

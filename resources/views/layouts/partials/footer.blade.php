@@ -41,48 +41,46 @@
         @endif
       </div>
 
-      <!-- Right Columns: Footer Links -->
-      <div class="col-12 col-md-12 col-lg-9">
-        <div class="row">
-          <!-- Column 1 -->
-          <div class="col-6 col-md-3 mb-3">
-            <ul class="footer-links list-unstyled">
-              <li><a href="#">{{ __('footer.newsletter') }}</a></li>
-              <li><a href="#">{{ __('footer.contact') }}</a></li>
-              <li><a href="#">{{ __('footer.subscribe') }}</a></li>
-            </ul>
-          </div>
+ <!-- Right Columns:  Footer Links -->
+<div class="col-12 col-md-12 col-lg-9">
+  <div class="row">
+    <!-- Column 1 -->
+    <div class="col-6 col-md-3 mb-3">
+      <ul class="footer-links list-unstyled">
+        <li><a href="#">{{ __('footer.newsletter') }}</a></li>
+        <li><a href="{{ route('frontend.page.show', ['locale' => app()->getLocale(), 'slug' => 'contact-us']) }}">{{ __('footer.contact') }}</a></li>
+        <li><a href="#">{{ __('footer.subscribe') }}</a></li>
+      </ul>
+    </div>
 
-          <!-- Column 2 -->
-          <div class="col-6 col-md-3 mb-3">
-            <ul class="footer-links list-unstyled">
-              <li><a href="#">{{ __('about') }}</a></li>
-              <li><a href="#">{{ __('community') }}</a></li>
-              <li><a href="#">{{ __('other subs') }}</a></li>
-            </ul>
-          </div>
+    <!-- Column 2 -->
+    <div class="col-6 col-md-3 mb-3">
+      <ul class="footer-links list-unstyled">
+        <li><a href="{{ route('frontend.page.show', ['locale' => app()->getLocale(), 'slug' => 'about-us']) }}">{{ __('footer.about') }}</a></li>
+        <li><a href="#">{{ __('footer.community') }}</a></li>
+        <li><a href="#">{{ __('footer.other_subs') }}</a></li>
+      </ul>
+    </div>
 
-          <!-- Column 3 -->
-          <div class="col-6 col-md-3 mb-3">
-            <ul class="footer-links list-unstyled">
-              <li><a href="#">{{ __('media kit') }}</a></li>
-              <li><a href="#">{{ __('advertise') }}</a></li>
-              <li><a href="#">{{ __('events') }}</a></li>
-            </ul>
-          </div>
+    <!-- Column 3 -->
+    <div class="col-6 col-md-3 mb-3">
+      <ul class="footer-links list-unstyled">
+        <li><a href="#">{{ __('footer. media_kit') }}</a></li>
+        <li><a href="#">{{ __('footer.advertise') }}</a></li>
+        <li><a href="#">{{ __('footer.events') }}</a></li>
+      </ul>
+    </div>
 
-          <!-- Column 4 -->
-          <div class="col-6 col-md-3 mb-3">
-            <ul class="footer-links list-unstyled">
-              <li><a href="#">{{ __('press') }}</a></li>
-              <li><a href="#">{{ __('customer service') }}</a></li>
-              <li><a href="#">{{ __('giveaways') }}</a></li>
-            </ul>
-          </div>
-        </div>
-      </div>
+    <!-- Column 4 -->
+    <div class="col-6 col-md-3 mb-3">
+      <ul class="footer-links list-unstyled">
+        <li><a href="#">{{ __('footer. press') }}</a></li>
+        <li><a href="#">{{ __('footer.customer_service') }}</a></li>
+        <li><a href="#">{{ __('footer.giveaways') }}</a></li>
+      </ul>
     </div>
   </div>
+</div>
 
   <!-- Legal Section -->
   <div class="footer-legal py-4 border-top">
