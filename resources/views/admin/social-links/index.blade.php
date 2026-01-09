@@ -10,7 +10,7 @@
             <i class="bi bi-share me-2"></i>
             Daftar Social Media Links
         </h5>
-        <a href="{{ route('admin. social-links.create') }}" class="btn btn-primary">
+        <a href="{{ route('admin.social-links.create') }}" class="btn btn-primary">
             <i class="bi bi-plus-circle me-1"></i>
             Tambah Social Media
         </a>

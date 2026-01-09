@@ -803,3 +803,161 @@ header .form-control-sm {
     width: 150px !important;
   }
 }
+
+/* ========================================
+   FOOTER - LAYOUT FIX
+   ======================================== */
+
+.site-footer {
+  background:  #fff;
+  color: #111827;
+  border-top: 1px solid #e5e7eb;
+  margin-top: 4rem;
+}
+
+.site-footer .container {
+  max-width: 1200px;
+}
+
+.footer-top {
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
+
+/* Footer Brand */
+.footer-brand {
+  margin-bottom: 1.5rem;
+}
+
+.footer-logo {
+  height: 40px;
+  width: auto;
+  display: block;
+  object-fit: contain;
+}
+
+.logo-text {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+/* Social Icons */
+.footer-social {
+  display: flex ! important;
+  align-items:  center;
+  gap: 12px;
+  flex-wrap: nowrap;
+}
+
+.footer-social .social-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: transparent;
+  color: #111827;
+  text-decoration: none;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.footer-social .social-link:hover {
+  transform:  translateY(-3px);
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.footer-social .social-icon-img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+/* Footer Links */
+.footer-links {
+  margin:  0;
+  padding: 0;
+  list-style:  none;
+}
+
+.footer-links li {
+  margin-bottom: 0.75rem;
+}
+
+.footer-links a {
+  color: #111827;
+  text-decoration: none;
+  font-size: 0.875rem;
+  transition: color 0.2s ease;
+}
+
+.footer-links a:hover {
+  color: #000;
+  text-decoration: underline;
+}
+
+/* Legal Section */
+. footer-legal {
+  background:  #f9fafb;
+  border-top: 1px solid #e5e7eb;
+}
+
+.legal-links a {
+  color: #6b7280;
+  text-decoration: none;
+  font-size: 0.8125rem;
+}
+
+.legal-links a:hover {
+  color: #111827;
+  text-decoration: underline;
+}
+
+/* Cookie Button */
+.cookie-btn {
+  border: 2px solid #111827;
+  color: #111827;
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.cookie-btn:hover {
+  background: #111827;
+  color: #fff;
+}
+
+/* Responsive */
+@media (max-width:  767px) {
+  .footer-top {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+
+  .footer-social {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  . footer-social .social-link {
+    width: 36px;
+    height: 36px;
+  }
+
+  . footer-social .social-icon-img {
+    width: 18px;
+    height: 18px;
+  }
+
+  .footer-links li {
+    margin-bottom: 0.5rem;
+  }
+
+  .legal-links {
+    flex-direction: column;
+    gap: 0.5rem ! important;
+  }
+}

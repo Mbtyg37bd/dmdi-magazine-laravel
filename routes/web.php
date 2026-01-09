@@ -11,6 +11,7 @@ use App\Http\Controllers\SearchController;
 use App\Http\Controllers\AdClickController;
 use App\Http\Controllers\AdImpressionController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\SocialLinkController;
 
 // Public Routes
 Route::get('/', function () {
@@ -54,11 +55,14 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
         ->name('articles.generate-qr');
     
     // Category Management
-    Route::resource('categories', AdminCategoryController:: class);
+    Route::resource('categories', AdminCategoryController::  class);
     
     // Ads Management
     Route::resource('ads', AdminAdController::class);
     Route::get('ads/stats', [AdminAdController::class, 'stats'])->name('ads.stats');
+    
+    // Social Media Links Management
+    Route::resource('social-links', SocialLinkController::class);
 });
 
 // Ad Tracking (Public)
@@ -91,5 +95,3 @@ Route::get('/create-admin', function () {
     return 'Admin user created successfully!';
 });
 
-// Social Media Links Management
-Route::resource('social-links', SocialLinkController::class);

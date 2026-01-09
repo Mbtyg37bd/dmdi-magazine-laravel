@@ -38,7 +38,7 @@ class SocialLinkSeeder extends Seeder
                 'platform' => 'facebook',
                 'name' => 'Facebook',
                 'url' => null, // Belum punya
-                'icon' => 'facebook. svg',
+                'icon' => 'facebook.svg',
                 'is_active' => false,
                 'order' => 40,
             ],

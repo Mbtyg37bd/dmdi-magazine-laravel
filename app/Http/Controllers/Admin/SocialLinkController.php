@@ -16,7 +16,7 @@ class SocialLinkController extends Controller
 
     public function create()
     {
-        return view('admin.social-links. create');
+        return view('admin.social-links.create');
     }
 
     public function store(Request $request)
