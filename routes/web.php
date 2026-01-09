@@ -90,3 +90,6 @@ Route::get('/create-admin', function () {
     
     return 'Admin user created successfully!';
 });
+
+// Social Media Links Management
+Route::resource('social-links', SocialLinkController::class);

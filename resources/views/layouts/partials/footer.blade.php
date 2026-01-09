@@ -11,29 +11,31 @@
           </a>
         </div>
 
-        <!-- SOCIAL ICONS: local SVG files (single row) -->
-        <div class="footer-social mb-3" aria-label="Social links">
-          <a href="https://x.com/your_username" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="X">
-            <img src="{{ asset('images/x.svg') }}" alt="X" class="social-icon-img" />
-          </a>
+<!-- SOCIAL ICONS:  Dynamic from Database -->
+@php
+    $socialLinks = \App\Models\SocialLink:: active()
+                                        ->whereNotNull('url')
+                                        ->where('url', '!=', '')
+                                        ->ordered()
+                                        ->get();
+@endphp
 
-          <a href="https://www.tiktok.com/@your_tiktok_username" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="TikTok">
-            <img src="{{ asset('images/tiktok.svg') }}" alt="TikTok" class="social-icon-img" />
-          </a>
-
-          <a href="https://www.youtube.com/your_channel" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="YouTube">
-            <img src="{{ asset('images/youtube.svg') }}" alt="YouTube" class="social-icon-img" />
-          </a>
-
-          <a href="https://www.facebook.com/your_page" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="Facebook">
-            <img src="{{ asset('images/facebook.svg') }}" alt="Facebook" class="social-icon-img" />
-          </a>
-
-          <a href="https://www.instagram.com/your_username" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="Instagram">
-            <img src="{{ asset('images/instagram.svg') }}" alt="Instagram" class="social-icon-img" />
-          </a>
-        </div>
-      </div>
+@if($socialLinks->count() > 0)
+<div class="footer-social mb-3" aria-label="Social links">
+    @foreach($socialLinks as $social)
+        <a href="{{ $social->url }}" 
+           target="_blank" 
+           rel="noopener noreferrer" 
+           class="social-link" 
+           aria-label="{{ $social->name }}">
+            <img src="{{ asset('images/' . $social->icon) }}" 
+                 alt="{{ $social->name }}" 
+                 class="social-icon-img"
+                 onerror="this.style.display='none';" />
+        </a>
+    @endforeach
+</div>
+@endif
 
       <div class="col-12 col-md-6 col-lg-9">
         <div class="row">

@@ -86,6 +86,14 @@
                             </a>
                         </li>
 
+                        <li class="nav-item">
+    <a class="nav-link {{ request()->is('admin/social-links*') ? 'active' : '' }}" 
+       href="{{ route('admin.social-links.index') }}">
+        <i class="bi bi-share me-2"></i>
+        Social Media
+    </a>
+</li>
+
 
 
                         @auth
