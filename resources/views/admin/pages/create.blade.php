@@ -1,10 +1,10 @@
-@extends('admin.layouts. admin')
+@extends('admin.layouts.admin')
 
 @section('title', 'Tambah Halaman - DMDI Admin')
 @section('page-title', 'Tambah Halaman')
 
 @section('content')
-<form action="{{ route('admin.pages. store') }}" method="POST">
+<form action="{{ route('admin.pages.store') }}" method="POST">
     @csrf
     
     <div class="row">

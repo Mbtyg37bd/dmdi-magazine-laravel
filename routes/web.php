@@ -22,23 +22,28 @@ Route::get('/', function () {
 // Multilingual Frontend Routes
 Route::get('/{locale}', [HomeController::class, 'index'])
     ->where('locale', 'id|en')
+    ->middleware('locale')
     ->name('frontend.home');
 
 Route::get('/{locale}/article/{slug}', [FrontendController::class, 'showArticle'])
     ->where('locale', 'id|en')
-    ->name('frontend.article. show');
+    ->middleware('locale')
+    ->name('frontend.article.show');
 
-Route::get('/{locale}/category/{slug}', [FrontendController::class, 'showCategory'])
+Route::get('/{locale}/category/{slug}', [FrontendController:: class, 'showCategory'])
     ->where('locale', 'id|en')
+    ->middleware('locale')
     ->name('frontend.category.show');
 
 Route::get('/{locale}/search', [SearchController::class, 'index'])
     ->where('locale', 'id|en')
+    ->middleware('locale')
     ->name('frontend.search');
 
-    // Static Pages (About Us, Contact, etc)
-Route::get('/{locale}/page/{slug}', [PageController:: class, 'show'])
+// Static Pages (About Us, Contact, etc)
+Route::get('/{locale}/page/{slug}', [PageController::class, 'show'])
     ->where('locale', 'id|en')
+    ->middleware('locale')
     ->name('frontend.page.show');
 
 // Login redirect

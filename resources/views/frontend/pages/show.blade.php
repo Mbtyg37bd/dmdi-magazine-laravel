@@ -27,10 +27,11 @@
                 </ol>
             </nav>
 
-            <!-- Page Title -->
+            <!-- Page Title (HANYA SATU) -->
             <h1 class="display-4 fw-bold mb-4" style="font-family: 'Playfair Display', serif;">
                 {{ $page->getTitle() }}
             </h1>
+
 
             <!-- Page Content -->
             <div class="page-content prose">
@@ -60,8 +61,8 @@
 }
 
 . page-content h2 {
-    font-family: 'Playfair Display', serif;
-    font-size: 2rem;
+    font-family:  'Playfair Display', serif;
+    font-size:  2rem;
     font-weight: 700;
     margin-top: 2.5rem;
     margin-bottom: 1rem;
@@ -107,17 +108,17 @@
     margin:  1.5rem 0;
 }
 
-.page-content blockquote {
+. page-content blockquote {
     border-left: 4px solid #e5e7eb;
     padding-left: 1.5rem;
-    margin:  1.5rem 0;
+    margin: 1.5rem 0;
     font-style: italic;
     color: #6b7280;
 }
 
 .breadcrumb {
     background:  transparent;
-    padding:  0;
+    padding: 0;
     margin-bottom: 1rem;
 }
 

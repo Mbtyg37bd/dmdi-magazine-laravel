@@ -21,12 +21,42 @@
 </head>
 <body class="antialiased bg-white text-gray-900">
 @php
-  // current locale and current path, used for language links
+  use Illuminate\Support\Facades\Route;
+  
+  // Current locale
   $currentLocale = app()->getLocale() ?? 'id';
-  $path = request()->getRequestUri();
-  // normalize path so '/id/.. .' doesn't become '/id/id/...'
-  $path = preg_replace('#^/(id|en)#', '', $path);
-  if ($path === '') { $path = '/'; }
+  
+  // Get current route info
+  $currentRouteName = Route::currentRouteName();
+  $currentParams = request()->route() ? request()->route()->parameters() : [];
+  
+  // Generate language switch URLs
+  $idUrl = '#';
+  $enUrl = '#';
+  
+  try {
+    // For named routes with locale parameter
+    if ($currentRouteName && isset($currentParams['locale'])) {
+      // Create new params with different locale
+      $idParams = array_merge($currentParams, ['locale' => 'id']);
+      $enParams = array_merge($currentParams, ['locale' => 'en']);
+      
+      // Generate URLs
+      $idUrl = route($currentRouteName, $idParams);
+      $enUrl = route($currentRouteName, $enParams);
+    } else {
+      // Fallback for other routes
+      $path = request()->getRequestUri();
+      $path = preg_replace('#^/(id|en)#', '', $path);
+      if ($path === '') { $path = '/'; }
+      $idUrl = url('/id' . $path);
+      $enUrl = url('/en' . $path);
+    }
+  } catch (\Exception $e) {
+    // Final fallback to homepage
+    $idUrl = url('/id');
+    $enUrl = url('/en');
+  }
   
   // Kategori untuk main menu (top-level) - SORT BY menu_order
   $mainMenuCategories = \App\Models\Category::where('is_active', true)
@@ -40,7 +70,7 @@
   $dropdownCategories = \App\Models\Category::where('is_active', true)
                                             ->where('show_in_dropdown', true)
                                             ->orderBy('menu_order', 'asc')
-                                            ->orderBy('name_' .  $currentLocale, 'asc')
+                                            ->orderBy('name_' . $currentLocale, 'asc')
                                             ->limit(15)
                                             ->get();
 @endphp
@@ -122,11 +152,19 @@
               </button>
             </form>
 
-            <!-- Locale buttons (desktop) -->
-            <div class="d-none d-md-flex align-items-center gap-2" aria-label="{{ __('nav.change_language') }}">
-              <a href="{{ url('/id' . $path) }}" class="btn btn-sm {{ $currentLocale == 'id' ? 'btn-secondary' :  'btn-outline-secondary' }}" aria-pressed="{{ $currentLocale == 'id' ?  'true' : 'false' }}">ID</a>
-              <a href="{{ url('/en' . $path) }}" class="btn btn-sm {{ $currentLocale == 'en' ?  'btn-secondary' : 'btn-outline-secondary' }}" aria-pressed="{{ $currentLocale == 'en' ? 'true' : 'false' }}">EN</a>
-            </div>
+ <!-- Locale buttons (desktop) -->
+<div class="d-none d-md-flex align-items-center gap-2" aria-label="{{ __('nav.change_language') }}">
+  <a href="{{ $idUrl }}" 
+     class="btn btn-sm {{ $currentLocale == 'id' ? 'btn-secondary' :  'btn-outline-secondary' }}" 
+     aria-pressed="{{ $currentLocale == 'id' ? 'true' : 'false' }}">
+    ID
+  </a>
+  <a href="{{ $enUrl }}" 
+     class="btn btn-sm {{ $currentLocale == 'en' ? 'btn-secondary' : 'btn-outline-secondary' }}" 
+     aria-pressed="{{ $currentLocale == 'en' ? 'true' : 'false' }}">
+    EN
+  </a>
+</div>
 
             <!-- Mobile search toggle -->
             <button id="mobileSearchToggle" class="d-md-none btn btn-sm me-2" aria-label="Open search">
