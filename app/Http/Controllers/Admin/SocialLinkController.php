@@ -35,7 +35,7 @@ class SocialLinkController extends Controller
 
         SocialLink::create($validated);
 
-        return redirect()->route('admin.social-links. index')
+        return redirect()->route('admin.social-links.index')
                         ->with('success', 'Social media link berhasil ditambahkan! ');
     }
 
