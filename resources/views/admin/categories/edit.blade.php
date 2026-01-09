@@ -65,21 +65,42 @@
                         @enderror
                     </div>
 
-                    <!-- Deskripsi (English) -->
-                    <div class="mb-4">
-                        <label for="description_en" class="form-label fw-semibold">
-                            Deskripsi (English)
-                        </label>
-                        <textarea class="form-control @error('description_en') is-invalid @enderror" 
-                                  id="description_en" 
-                                  name="description_en" 
-                                  rows="3">{{ old('description_en', $category->description_en) }}</textarea>
-                        @error('description_en')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
+ <!-- Deskripsi (English) -->
+<div class="mb-4">
+    <label for="description_en" class="form-label fw-semibold">
+        Deskripsi (English)
+    </label>
+    <textarea class="form-control @error('description_en') is-invalid @enderror" 
+              id="description_en" 
+              name="description_en" 
+              rows="3"
+              placeholder="Category description in English...">{{ old('description_en', $category->description_en) }}</textarea>
+    @error('description_en')
+        <div class="invalid-feedback">{{ $message }}</div>
+    @enderror
+</div>
 
-               <!-- Status -->
+<!-- NEW:  Menu Order -->
+<div class="mb-4">
+    <label for="menu_order" class="form-label fw-semibold">
+        Urutan Menu
+    </label>
+    <input type="number" 
+           class="form-control @error('menu_order') is-invalid @enderror" 
+           id="menu_order" 
+           name="menu_order" 
+           value="{{ old('menu_order', $category->menu_order) }}"
+           min="0"
+           placeholder="0">
+    @error('menu_order')
+        <div class="invalid-feedback">{{ $message }}</div>
+    @enderror
+    <div class="form-text">
+        Semakin kecil angka, semakin depan posisinya di menu. <br>
+        Contoh: 0 = pertama, 10 = kedua, 20 = ketiga
+    </div>
+</div>
+
 <!-- Display Settings -->
 <div class="mb-4">
     <h6 class="fw-bold mb-3">Pengaturan Tampilan</h6>

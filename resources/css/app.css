@@ -619,3 +619,187 @@ header .form-control-sm {
   border-radius: 6px; /* hati-hati jika mau tegas */
   box-shadow: none;
 }
+
+/* ========================================
+   NAVIGATION BAR - HORIZONTAL FORCE FIX
+   ======================================== */
+
+/* Desktop Navigation - Force Horizontal */
+.site-header nav {
+  display: flex ! important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 1rem !important;
+  flex-wrap: wrap !important;
+}
+
+/* Nav Link Styling */
+.site-header . nav-link {
+  white-space: nowrap !important;
+  text-decoration: none;
+  color: #111827;
+  font-weight: 600;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: color 0.2s ease;
+  padding: 0.25rem 0.5rem;
+}
+
+.site-header .nav-link:hover {
+  color:  #000;
+  text-decoration: underline;
+}
+
+/* Dropdown Styling */
+.site-header .dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.site-header .dropdown-toggle {
+  white-space: nowrap !important;
+}
+
+.site-header .dropdown-toggle::after {
+  margin-left: 0.3rem;
+  vertical-align:  0.15em;
+}
+
+. site-header .dropdown-menu {
+  min-width: 220px;
+  max-height: 400px;
+  overflow-y:  auto;
+}
+
+/* Mobile Navigation - Vertical */
+@media (max-width: 768px) {
+  .site-header nav {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+  
+  #mobileNav nav {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+}
+
+/* Fix Bootstrap + Tailwind Conflict */
+. d-none. d-md-flex {
+  display: none !important;
+}
+
+@media (min-width: 768px) {
+  .d-none. d-md-flex {
+    display: flex !  important;
+    flex-direction: row ! important;
+  }
+}
+
+/* Ensure logo container doesn't flex */
+.flex-grow-1 {
+  flex-grow:  1;
+  display: flex !important;
+  justify-content: center !important;
+}
+
+/* ========================================
+   HEADER NAVIGATION - LAYOUT FIX
+   ======================================== */
+
+/* Make header container wider to fit long category names */
+.site-header . container {
+  max-width:  1400px !important;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+/* Navigation - Optimize spacing */
+.site-header nav {
+  display: flex ! important;
+  flex-direction:  row !important;
+  align-items: center !important;
+  gap: 0.65rem !important; /* Reduced from 1rem */
+  flex-wrap: nowrap !important; /* Prevent wrapping */
+  flex:  1 1 auto;
+  max-width: none;
+}
+
+/* Nav Links - Smaller font for better fit */
+.site-header . nav-link {
+  white-space: nowrap !important;
+  font-size: 0.8rem !important; /* Slightly smaller */
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding:  0.25rem 0.4rem;
+  text-decoration: none;
+  color: #111827;
+  transition: color 0.2s ease;
+}
+
+. site-header .nav-link:hover {
+  color: #000;
+  text-decoration: underline;
+}
+
+/* Logo - Flexible but constrained */
+.site-header . flex-grow-1 {
+  flex: 0 1 auto;
+  min-width: 100px;
+  max-width:  180px;
+  display: flex ! important;
+  justify-content: center !important;
+}
+
+. site-header .header-logo {
+  height: 40px;
+  width: auto;
+}
+
+/* Dropdown */
+.site-header .dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.site-header .dropdown-toggle {
+  white-space:  nowrap !important;
+}
+
+/* Search bar - Compact */
+.site-header form input. form-control-sm {
+  width: 180px ! important; /* Reduced from 220px */
+  font-size: 0.85rem;
+}
+
+/* Language buttons - Compact */
+.site-header .btn-sm {
+  padding: 0.2rem 0.45rem;
+  font-size: 0.75rem;
+}
+
+/* Mobile:  Keep vertical layout */
+@media (max-width: 768px) {
+  .site-header nav {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    flex-wrap: wrap !important;
+  }
+  
+  .site-header .container {
+    max-width: 100%;
+  }
+}
+
+/* Tablet: Adjust for medium screens */
+@media (min-width: 769px) and (max-width: 1200px) {
+  .site-header . nav-link {
+    font-size: 0.75rem !important;
+    gap: 0.5rem !important;
+  }
+  
+  .site-header form input.form-control-sm {
+    width: 150px !important;
+  }
+}

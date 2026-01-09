@@ -28,17 +28,19 @@
   $path = preg_replace('#^/(id|en)#', '', $path);
   if ($path === '') { $path = '/'; }
   
-  // Kategori untuk main menu (top-level)
+  // Kategori untuk main menu (top-level) - SORT BY menu_order
   $mainMenuCategories = \App\Models\Category::where('is_active', true)
                                             ->where('show_in_main_menu', true)
-                                            ->orderBy('name_' . $currentLocale)
+                                            ->orderBy('menu_order', 'asc')
+                                            ->orderBy('name_' . $currentLocale, 'asc')
                                             ->limit(10)
                                             ->get();
   
-  // Kategori untuk dropdown "Kategori"
+  // Kategori untuk dropdown "Kategori" - SORT BY menu_order
   $dropdownCategories = \App\Models\Category::where('is_active', true)
                                             ->where('show_in_dropdown', true)
-                                            ->orderBy('name_' . $currentLocale)
+                                            ->orderBy('menu_order', 'asc')
+                                            ->orderBy('name_' .  $currentLocale, 'asc')
                                             ->limit(15)
                                             ->get();
 @endphp
@@ -47,35 +49,49 @@
 <header class="site-header border-b bg-white">
   <div class="container mx-auto px-4">
     <div class="d-flex align-items-center justify-content-between py-3" style="display: flex; position:relative;">
-      <!-- Left nav (desktop) -->
-      <nav class="d-none d-md-flex align-items-center gap-3 text-uppercase" style="gap:1rem;">
-        <a href="{{ route('frontend.home', ['locale' => $currentLocale]) }}" class="nav-link">{{ __('nav.home') }}</a>
-        
-        <!-- Main Menu Categories (Dynamic from Database) -->
-        @foreach($mainMenuCategories as $cat)
-          <a href="{{ url($currentLocale . '/category/' . $cat->slug) }}" class="nav-link">
-            {{ $currentLocale == 'id' ?  $cat->name_id : $cat->name_en }}
-          </a>
-        @endforeach
-        
-        <!-- Dropdown "Kategori" -->
-        @if($dropdownCategories->count() > 0)
-          <div class="dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="categoriesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              {{ $currentLocale == 'id' ? 'Kategori' :  'Categories' }}
+<!-- Left nav (desktop) -->
+<nav class="d-none d-md-flex align-items-center text-uppercase" 
+     style="display: flex !important; flex-direction: row !important; gap:1rem !important; flex-wrap:wrap !important;">
+  
+  <a href="{{ route('frontend.home', ['locale' => $currentLocale]) }}" 
+     class="nav-link" 
+     style="white-space:nowrap;">
+    {{ __('nav.home') }}
+  </a>
+  
+  <!-- Main Menu Categories (Dynamic from Database) -->
+  @foreach($mainMenuCategories as $cat)
+    <a href="{{ url($currentLocale .  '/category/' . $cat->slug) }}" 
+       class="nav-link" 
+       style="white-space:nowrap;">
+      {{ $currentLocale == 'id' ?   $cat->name_id : $cat->name_en }}
+    </a>
+  @endforeach
+  
+  <!-- Dropdown "Kategori" -->
+  @if($dropdownCategories->count() > 0)
+    <div class="dropdown" style="position:relative; display:inline-block;">
+      <a class="nav-link dropdown-toggle" 
+         href="#" 
+         id="categoriesDropdown" 
+         role="button" 
+         data-bs-toggle="dropdown" 
+         aria-expanded="false"
+         style="white-space: nowrap;">
+        {{ $currentLocale == 'id' ?   'KATEGORI' :   'CATEGORIES' }}
+      </a>
+      <ul class="dropdown-menu" aria-labelledby="categoriesDropdown">
+        @foreach($dropdownCategories as $cat)
+          <li>
+            <a class="dropdown-item" href="{{ url($currentLocale . '/category/' . $cat->slug) }}">
+              {{ $currentLocale == 'id' ?  $cat->name_id :  $cat->name_en }}
             </a>
-            <ul class="dropdown-menu" aria-labelledby="categoriesDropdown">
-              @foreach($dropdownCategories as $cat)
-                <li>
-                  <a class="dropdown-item" href="{{ url($currentLocale . '/category/' . $cat->slug) }}">
-                    {{ $currentLocale == 'id' ? $cat->name_id : $cat->name_en }}
-                  </a>
-                </li>
-              @endforeach
-            </ul>
-          </div>
-        @endif
-      </nav>
+          </li>
+        @endforeach
+      </ul>
+    </div>
+  @endif
+</nav>
 
           <!-- Logo (center on desktop) -->
           <div class="flex-grow-1 d-flex justify-content-center">

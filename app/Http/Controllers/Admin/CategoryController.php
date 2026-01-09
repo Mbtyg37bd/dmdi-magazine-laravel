@@ -36,9 +36,10 @@ public function store(Request $request)
 {
     $validated = $request->validate([
         'name_id' => 'required|string|max:255',
-        'name_en' => 'required|string|max: 255|unique:categories,name_en',
+        'name_en' => 'required|string|max:255|unique:categories,name_en',
         'description_id' => 'nullable|string',
         'description_en' => 'nullable|string',
+        'menu_order' => 'nullable|integer|min:0', // ← TAMBAHKAN
         'is_active' => 'nullable|boolean',
         'show_in_main_menu' => 'nullable|boolean',
         'show_in_dropdown' => 'nullable|boolean',
@@ -57,6 +58,7 @@ public function store(Request $request)
     $validated['is_active'] = $request->has('is_active') ? 1 : 0;
     $validated['show_in_main_menu'] = $request->has('show_in_main_menu') ? 1 : 0;
     $validated['show_in_dropdown'] = $request->has('show_in_dropdown') ? 1 : 0;
+    $validated['menu_order'] = $request->input('menu_order', 0); // ← TAMBAHKAN
     
     // Backward compatibility
     $validated['show_in_header'] = $validated['show_in_main_menu'] || $validated['show_in_dropdown'];
@@ -64,7 +66,7 @@ public function store(Request $request)
     \App\Models\Category::create($validated);
 
     return redirect()->route('admin.categories.index')
-                    ->with('success', 'Kategori berhasil dibuat! ');
+                    ->with('success', 'Kategori berhasil dibuat!');
 }
 
     /**
@@ -99,6 +101,7 @@ public function update(Request $request, \App\Models\Category $category)
         'name_en' => 'required|string|max:255|unique:categories,name_en,' . $category->id,
         'description_id' => 'nullable|string',
         'description_en' => 'nullable|string',
+        'menu_order' => 'nullable|integer|min:0', // ← TAMBAHKAN
         'is_active' => 'nullable|boolean',
         'show_in_main_menu' => 'nullable|boolean',
         'show_in_dropdown' => 'nullable|boolean',
@@ -107,6 +110,7 @@ public function update(Request $request, \App\Models\Category $category)
     $validated['is_active'] = $request->has('is_active') ? 1 : 0;
     $validated['show_in_main_menu'] = $request->has('show_in_main_menu') ? 1 : 0;
     $validated['show_in_dropdown'] = $request->has('show_in_dropdown') ? 1 : 0;
+    $validated['menu_order'] = $request->input('menu_order', 0); // ← TAMBAHKAN
     
     // Backward compatibility
     $validated['show_in_header'] = $validated['show_in_main_menu'] || $validated['show_in_dropdown'];
@@ -116,7 +120,6 @@ public function update(Request $request, \App\Models\Category $category)
     return redirect()->route('admin.categories.index')
                     ->with('success', 'Kategori berhasil diperbarui!');
 }
-
     /**
      * Remove the specified category
      */

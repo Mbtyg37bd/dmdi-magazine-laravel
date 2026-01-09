@@ -15,7 +15,8 @@ class Category extends Model
     'is_active',
     'show_in_header',      // Keep untuk backward compatibility
     'show_in_main_menu',   // NEW
-    'show_in_dropdown'     // NEW
+    'show_in_dropdown',    // NEW
+    'menu_order',
 ];
     
     public function articles()
