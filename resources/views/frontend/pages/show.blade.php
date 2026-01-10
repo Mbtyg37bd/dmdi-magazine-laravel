@@ -27,16 +27,25 @@
                 </ol>
             </nav>
 
-            <!-- Page Title (HANYA SATU) -->
-            <h1 class="display-4 fw-bold mb-4" style="font-family: 'Playfair Display', serif;">
-                {{ $page->getTitle() }}
-            </h1>
+ <!-- Page Title -->
+<h1 class="display-4 fw-bold mb-4" style="font-family: 'Playfair Display', serif;">
+    {{ $page->getTitle() }}
+</h1>
 
+<!-- Featured Image (if exists) -->
+@if($page->image)
+<div class="mb-4">
+    <img src="{{ $page->getImageUrl() }}" 
+         alt="{{ $page->getTitle() }}" 
+         class="img-fluid rounded shadow-sm"
+         style="width: 100%; max-height: 500px; object-fit: cover;">
+</div>
+@endif
 
-            <!-- Page Content -->
-            <div class="page-content prose">
-                {!! $page->getContent() !!}
-            </div>
+<!-- Page Content -->
+<div class="page-content prose">
+    {!! $page->getContent() !!}
+</div>
 
             <!-- Back to Home -->
             <div class="mt-5 pt-4 border-top">

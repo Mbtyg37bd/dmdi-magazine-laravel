@@ -4,7 +4,7 @@
 @section('page-title', 'Tambah Halaman')
 
 @section('content')
-<form action="{{ route('admin.pages.store') }}" method="POST">
+<form action="{{ route('admin.pages.store') }}" method="POST" enctype="multipart/form-data">
     @csrf
     
     <div class="row">
@@ -69,6 +69,36 @@
                         @enderror
                         <small class="text-muted">Kosongkan untuk generate otomatis dari judul</small>
                     </div>
+
+                    <!-- IMAGE UPLOAD (NEW) -->
+<div class="mb-4">
+    <label for="image" class="form-label fw-semibold">
+        <i class="bi bi-image me-1"></i>
+        Gambar Header (Optional)
+    </label>
+    <input type="file" 
+           class="form-control @error('image') is-invalid @enderror" 
+           id="image" 
+           name="image"
+           accept="image/jpeg,image/jpg,image/png,image/webp"
+           onchange="previewImage(event)">
+    @error('image')
+        <div class="invalid-feedback">{{ $message }}</div>
+    @enderror
+    <div class="alert alert-info mt-2 py-2 px-3">
+        <small>
+            <i class="bi bi-info-circle me-1"></i>
+            <strong>Format: </strong> JPEG, JPG, PNG, WebP | 
+            <strong>Ukuran maksimal:</strong> <span class="text-danger fw-bold">2MB (2048 KB)</span>
+        </small>
+    </div>
+    
+    <!-- Image Preview -->
+    <div id="imagePreview" class="mt-3" style="display: none;">
+        <img id="preview" src="" alt="Preview" class="img-thumbnail" style="max-width: 400px; max-height: 250px;">
+        <div id="imageInfo" class="small text-muted mt-2"></div>
+    </div>
+</div>
 
                     <!-- Content ID -->
                     <div class="mb-4">
@@ -230,5 +260,59 @@ document.getElementById('title_en').addEventListener('input', function() {
         slugInput.value = slug;
     }
 });
+
+// Image preview & validation
+function previewImage(event) {
+    const file = event.target.files[0];
+    const preview = document.getElementById('preview');
+    const previewContainer = document.getElementById('imagePreview');
+    const imageInfo = document.getElementById('imageInfo');
+    const MAX_SIZE = 2 * 1024 * 1024; // 2MB in bytes
+    
+    if (file) {
+        // Validate file size
+        if (file.size > MAX_SIZE) {
+            const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
+            alert(`❌ UKURAN GAMBAR TERLALU BESAR!\n\n` +
+                  `Ukuran file Anda: ${sizeMB} MB\n` +
+                  `Maksimal: 2 MB\n\n` +
+                  `Silakan pilih gambar yang lebih kecil atau kompres gambar terlebih dahulu.`);
+            event.target.value = ''; // Clear input
+            previewContainer.style.display = 'none';
+            return;
+        }
+        
+        // Validate file type
+        const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+        if (! allowedTypes.includes(file. type)) {
+            alert('❌ FORMAT FILE TIDAK DIDUKUNG!\n\nFormat yang diizinkan: JPEG, JPG, PNG, WebP');
+            event.target.value = '';
+            previewContainer.style. display = 'none';
+            return;
+        }
+        
+        // Show preview
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+            previewContainer.style.display = 'block';
+            
+            // Show file info
+            const sizeKB = (file.size / 1024).toFixed(2);
+            const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
+            const sizeText = file.size > 1024 * 1024 ? `${sizeMB} MB` : `${sizeKB} KB`;
+            
+            imageInfo.innerHTML = `
+                <i class="bi bi-check-circle text-success me-1"></i>
+                <strong>File:</strong> ${file.name} | 
+                <strong>Ukuran:</strong> <span class="text-success fw-bold">${sizeText}</span> | 
+                <strong>Tipe:</strong> ${file. type}
+            `;
+        };
+        reader.readAsDataURL(file);
+    } else {
+        previewContainer.style.display = 'none';
+    }
+}
 </script>
 @endpush

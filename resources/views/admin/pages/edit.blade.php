@@ -4,7 +4,7 @@
 @section('page-title', 'Edit Halaman')
 
 @section('content')
-<form action="{{ route('admin.pages.update', $page->id) }}" method="POST">
+<form action="{{ route('admin.pages.update', $page->id) }}" method="POST" enctype="multipart/form-data">
     @csrf
     @method('PUT')
     
@@ -51,21 +51,74 @@
                         @enderror
                     </div>
 
-                    <!-- Slug -->
-                    <div class="mb-4">
-                        <label for="slug" class="form-label fw-semibold">
-                            Slug
-                        </label>
-                        <input type="text" 
-                               class="form-control @error('slug') is-invalid @enderror" 
-                               id="slug" 
-                               name="slug" 
-                               value="{{ old('slug', $page->slug) }}">
-                        @error('slug')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
+  <!-- Slug -->
+<div class="mb-4">
+    <label for="slug" class="form-label fw-semibold">
+        Slug
+    </label>
+    <input type="text" 
+           class="form-control @error('slug') is-invalid @enderror" 
+           id="slug" 
+           name="slug" 
+           value="{{ old('slug', $page->slug) }}">
+    @error('slug')
+        <div class="invalid-feedback">{{ $message }}</div>
+    @enderror
+</div>
 
+<!-- IMAGE UPLOAD (NEW) -->
+<div class="mb-4">
+    <label for="image" class="form-label fw-semibold">
+        <i class="bi bi-image me-1"></i>
+        Gambar Header (Optional)
+    </label>
+    
+    @if($page->image)
+    <!-- Current Image Display -->
+    <div class="mb-3 p-3 border rounded bg-light">
+        <p class="small text-muted mb-2"><strong>Gambar Saat Ini:</strong></p>
+        <img src="{{ $page->getImageUrl() }}" 
+             alt="{{ $page->title_en }}" 
+             class="img-thumbnail mb-2"
+             style="max-width:  400px; max-height: 250px; object-fit: cover;">
+        <div class="form-check">
+            <input class="form-check-input" 
+                   type="checkbox" 
+                   id="remove_image" 
+                   name="remove_image" 
+                   value="1">
+            <label class="form-check-label text-danger" for="remove_image">
+                <i class="bi bi-trash me-1"></i>
+                <strong>Hapus gambar ini</strong>
+            </label>
+        </div>
+    </div>
+    @endif
+    
+    <input type="file" 
+           class="form-control @error('image') is-invalid @enderror" 
+           id="image" 
+           name="image"
+           accept="image/jpeg,image/jpg,image/png,image/webp"
+           onchange="previewImage(event)">
+    @error('image')
+        <div class="invalid-feedback">{{ $message }}</div>
+    @enderror
+    <div class="alert alert-info mt-2 py-2 px-3">
+        <small>
+            <i class="bi bi-info-circle me-1"></i>
+            <strong>Format: </strong> JPEG, JPG, PNG, WebP | 
+            <strong>Ukuran maksimal:</strong> <span class="text-danger fw-bold">2MB (2048 KB)</span>
+        </small>
+    </div>
+    
+    <!-- New Image Preview -->
+    <div id="imagePreview" class="mt-3" style="display: none;">
+        <p class="small text-muted mb-2"><strong>Preview Gambar Baru:</strong></p>
+        <img id="preview" src="" alt="Preview" class="img-thumbnail" style="max-width: 400px; max-height: 250px;">
+        <div id="imageInfo" class="small text-muted mt-2"></div>
+    </div>
+</div>
                     <!-- Content ID -->
                     <div class="mb-4">
                         <label for="content_id" class="form-label fw-semibold">
