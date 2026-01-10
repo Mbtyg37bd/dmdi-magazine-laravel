@@ -16,10 +16,13 @@ class Page extends Model
         'meta_description_id',
         'meta_description_en',
         'is_active',
+        'show_in_footer',  // ← TAMBAHKAN INI
+        'footer_order',     // ← TAMBAHKAN INI
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
+        'show_in_footer' => 'boolean',  // ← TAMBAHKAN INI
     ];
 
     /**
@@ -28,6 +31,14 @@ class Page extends Model
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
+    }
+
+    /**
+     * Scope untuk pages yang muncul di footer
+     */
+    public function scopeInFooter($query)
+    {
+        return $query->where('show_in_footer', true);
     }
 
     /**
@@ -62,7 +73,7 @@ class Page extends Model
      */
     protected static function boot()
     {
-        parent::boot();
+        parent:: boot();
 
         static::creating(function ($page) {
             if (empty($page->slug)) {

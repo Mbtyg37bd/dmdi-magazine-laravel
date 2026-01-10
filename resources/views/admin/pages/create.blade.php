@@ -147,29 +147,55 @@
                 </div>
             </div>
 
-            <!-- Status -->
-            <div class="card border-0 shadow-sm mb-4">
-                <div class="card-header bg-white border-0 py-3">
-                    <h6 class="mb-0 fw-bold">
-                        <i class="bi bi-gear me-2"></i>
-                        Status
-                    </h6>
-                </div>
-                <div class="card-body">
-                    <div class="form-check form-switch">
-                        <input class="form-check-input" 
-                               type="checkbox" 
-                               id="is_active" 
-                               name="is_active" 
-                               value="1"
-                               {{ old('is_active', true) ? 'checked' : '' }}>
-                        <label class="form-check-label" for="is_active">
-                            Aktifkan Halaman
-                        </label>
-                        <div class="form-text">Halaman aktif akan bisa diakses publik</div>
-                    </div>
-                </div>
-            </div>
+ <!-- Status -->
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-header bg-white border-0 py-3">
+        <h6 class="mb-0 fw-bold">
+            <i class="bi bi-gear me-2"></i>
+            Status
+        </h6>
+    </div>
+    <div class="card-body">
+        <div class="form-check form-switch mb-3">
+            <input class="form-check-input" 
+                   type="checkbox" 
+                   id="is_active" 
+                   name="is_active" 
+                   value="1"
+                   {{ old('is_active', true) ? 'checked' : '' }}>
+            <label class="form-check-label" for="is_active">
+                Aktifkan Halaman
+            </label>
+            <div class="form-text">Halaman aktif akan bisa diakses publik</div>
+        </div>
+
+        <div class="form-check form-switch mb-3">
+            <input class="form-check-input" 
+                   type="checkbox" 
+                   id="show_in_footer" 
+                   name="show_in_footer" 
+                   value="1"
+                   {{ old('show_in_footer', true) ? 'checked' : '' }}>
+            <label class="form-check-label" for="show_in_footer">
+                Tampilkan di Footer
+            </label>
+            <div class="form-text">Halaman akan muncul di footer website</div>
+        </div>
+
+        <div class="mb-0">
+            <label for="footer_order" class="form-label fw-semibold">
+                Urutan di Footer
+            </label>
+            <input type="number" 
+                   class="form-control" 
+                   id="footer_order" 
+                   name="footer_order" 
+                   value="{{ old('footer_order', 0) }}"
+                   min="0">
+            <small class="text-muted">Angka kecil muncul lebih dulu</small>
+        </div>
+    </div>
+</div>
 
             <!-- Actions -->
             <div class="card border-0 shadow-sm">

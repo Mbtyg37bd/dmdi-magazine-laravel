@@ -41,45 +41,48 @@
         @endif
       </div>
 
- <!-- Right Columns:  Footer Links -->
+ <!-- Right Columns:   Footer Links - DYNAMIC FROM DATABASE -->
 <div class="col-12 col-md-12 col-lg-9">
+  @php
+    // Get pages that should appear in footer
+    $footerPages = \App\Models\Page::active()
+                                   ->inFooter()
+                                   ->orderBy('footer_order', 'asc')
+                                   ->orderBy('title_' . app()->getLocale(), 'asc')
+                                   ->get();
+    
+    // Group pages into columns (max 4 columns, ~3 items per column)
+    $itemsPerColumn = 3;
+    $totalColumns = 4;
+    $pagesChunked = $footerPages->chunk($itemsPerColumn);
+  @endphp
+
+  @if($footerPages->count() > 0)
   <div class="row">
-    <!-- Column 1 -->
-    <div class="col-6 col-md-3 mb-3">
-      <ul class="footer-links list-unstyled">
-        <li><a href="#">{{ __('footer.newsletter') }}</a></li>
-        <li><a href="{{ route('frontend.page.show', ['locale' => app()->getLocale(), 'slug' => 'contact-us']) }}">{{ __('footer.contact') }}</a></li>
-        <li><a href="#">{{ __('footer.subscribe') }}</a></li>
-      </ul>
-    </div>
-
-    <!-- Column 2 -->
-    <div class="col-6 col-md-3 mb-3">
-      <ul class="footer-links list-unstyled">
-        <li><a href="{{ route('frontend.page.show', ['locale' => app()->getLocale(), 'slug' => 'about-us']) }}">{{ __('footer.about') }}</a></li>
-        <li><a href="#">{{ __('footer.community') }}</a></li>
-        <li><a href="#">{{ __('footer.other_subs') }}</a></li>
-      </ul>
-    </div>
-
-    <!-- Column 3 -->
-    <div class="col-6 col-md-3 mb-3">
-      <ul class="footer-links list-unstyled">
-        <li><a href="#">{{ __('footer. media_kit') }}</a></li>
-        <li><a href="#">{{ __('footer.advertise') }}</a></li>
-        <li><a href="#">{{ __('footer.events') }}</a></li>
-      </ul>
-    </div>
-
-    <!-- Column 4 -->
-    <div class="col-6 col-md-3 mb-3">
-      <ul class="footer-links list-unstyled">
-        <li><a href="#">{{ __('footer. press') }}</a></li>
-        <li><a href="#">{{ __('footer.customer_service') }}</a></li>
-        <li><a href="#">{{ __('footer.giveaways') }}</a></li>
-      </ul>
+    @foreach($pagesChunked as $columnIndex => $pagesInColumn)
+      @if($columnIndex < $totalColumns)
+      <div class="col-6 col-md-3 mb-3">
+        <ul class="footer-links list-unstyled">
+          @foreach($pagesInColumn as $page)
+            <li>
+              <a href="{{ route('frontend.page.show', ['locale' => app()->getLocale(), 'slug' => $page->slug]) }}">
+                {{ $page->getTitle() }}
+              </a>
+            </li>
+          @endforeach
+        </ul>
+      </div>
+      @endif
+    @endforeach
+  </div>
+  @else
+  <!-- Fallback jika belum ada pages -->
+  <div class="row">
+    <div class="col-12">
+      <p class="text-muted small">Belum ada halaman di footer. </p>
     </div>
   </div>
+  @endif
 </div>
 
   <!-- Legal Section -->
