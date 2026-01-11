@@ -118,19 +118,60 @@ public function update(Request $request, Page $page)
         $validated['image'] = null;
     }
 
-    // Handle image upload (new image)
-    if ($request->hasFile('image')) {
-        // Delete old image if exists
-        if ($page->image) {
-            Storage::delete('public/pages/' .  $page->image);
+// Handle image upload (new image)
+if ($request->hasFile('image')) {
+    $image = $request->file('image');
+    
+    \Log::info('=== IMAGE UPLOAD DEBUG ===');
+    \Log::info('Original name: ' . $image->getClientOriginalName());
+    \Log::info('Size: ' . $image->getSize());
+    \Log::info('Mime: ' . $image->getMimeType());
+    \Log::info('Valid: ' . ($image->isValid() ? 'YES' : 'NO'));
+    
+    // Check target directory
+    $targetDir = storage_path('app/public/pages');
+    \Log::info('Target dir:  ' . $targetDir);
+    \Log::info('Dir exists: ' . (is_dir($targetDir) ? 'YES' : 'NO'));
+    
+    // Create directory if not exists
+    if (!is_dir($targetDir)) {
+        \Log::info('Creating directory.. .');
+        mkdir($targetDir, 0755, true);
+        \Log::info('Directory created:  ' . (is_dir($targetDir) ? 'YES' : 'NO'));
+    }
+    
+    \Log::info('Dir writable: ' . (is_writable($targetDir) ? 'YES' : 'NO'));
+    
+    // Delete old image if exists
+    if ($page->image) {
+        Storage::delete('public/pages/' .  $page->image);
+    }
+    
+    $imageName = time() . '_' . Str::slug($validated['title_en']) . '.' . $image->getClientOriginalExtension();
+    
+    \Log::info('Target filename: ' . $imageName);
+    
+    // Store file
+    try {
+        $result = $image->storeAs('public/pages', $imageName);
+        \Log::info('storeAs result: ' . ($result ? $result : 'NULL'));
+        
+        // Verify
+        $finalPath = storage_path('app/public/pages/' .  $imageName);
+        \Log::info('Final path: ' . $finalPath);
+        \Log::info('File exists: ' . (file_exists($finalPath) ? 'YES' : 'NO'));
+        
+        if (file_exists($finalPath)) {
+            \Log::info('File size: ' . filesize($finalPath));
         }
         
-        $image = $request->file('image');
-        $imageName = time() . '_' .  Str::slug($validated['title_en']) . '.' . $image->getClientOriginalExtension();
-        $image->storeAs('public/pages', $imageName);
         $validated['image'] = $imageName;
+        \Log::info('=== UPLOAD SUCCESS ===');
+    } catch (\Exception $e) {
+        \Log::error('=== UPLOAD FAILED ===');
+        \Log::error('Error: ' . $e->getMessage());
     }
-
+}
     $validated['is_active'] = $request->has('is_active') ? 1 : 0;
     $validated['show_in_footer'] = $request->has('show_in_footer') ? 1 : 0;
     $validated['footer_order'] = $request->input('footer_order', 0);

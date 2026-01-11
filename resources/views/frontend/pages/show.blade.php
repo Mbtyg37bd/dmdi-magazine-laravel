@@ -7,9 +7,23 @@
     <meta property="og:title" content="{{ $page->getTitle() }}">
     <meta property="og:description" content="{{ $page->getMetaDescription() }}">
     <meta property="og:type" content="website">
+    @if($page->image)
+    <meta property="og:image" content="{{ $page->getImageUrl() }}">
+    @endif
 @endsection
 
 @section('content')
+<!-- Featured Image FULL WIDTH (Outside Container - Like Article!) -->
+@if($page->image)
+<div class="w-100 mb-0" style="max-height: 600px; overflow: hidden;">
+    <img src="{{ $page->getImageUrl() }}" 
+         alt="{{ $page->getTitle() }}" 
+         class="w-100"
+         style="width: 100%; height: 600px; object-fit: cover; display: block;"
+         onerror="console.error('Image failed to load:', this.src); this.style.display='none';">
+</div>
+@endif
+
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-lg-10">
@@ -27,25 +41,15 @@
                 </ol>
             </nav>
 
- <!-- Page Title -->
-<h1 class="display-4 fw-bold mb-4" style="font-family: 'Playfair Display', serif;">
-    {{ $page->getTitle() }}
-</h1>
+            <!-- Page Title -->
+            <h1 class="display-4 fw-bold mb-4" style="font-family: 'Playfair Display', serif;">
+                {{ $page->getTitle() }}
+            </h1>
 
-<!-- Featured Image (if exists) -->
-@if($page->image)
-<div class="mb-4">
-    <img src="{{ $page->getImageUrl() }}" 
-         alt="{{ $page->getTitle() }}" 
-         class="img-fluid rounded shadow-sm"
-         style="width: 100%; max-height: 500px; object-fit: cover;">
-</div>
-@endif
-
-<!-- Page Content -->
-<div class="page-content prose">
-    {!! $page->getContent() !!}
-</div>
+            <!-- Page Content -->
+            <div class="page-content prose">
+                {!! $page->getContent() !!}
+            </div>
 
             <!-- Back to Home -->
             <div class="mt-5 pt-4 border-top">
@@ -70,8 +74,8 @@
 }
 
 . page-content h2 {
-    font-family:  'Playfair Display', serif;
-    font-size:  2rem;
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
     font-weight: 700;
     margin-top: 2.5rem;
     margin-bottom: 1rem;
@@ -120,7 +124,7 @@
 . page-content blockquote {
     border-left: 4px solid #e5e7eb;
     padding-left: 1.5rem;
-    margin: 1.5rem 0;
+    margin:  1.5rem 0;
     font-style: italic;
     color: #6b7280;
 }
